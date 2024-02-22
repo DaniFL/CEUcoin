@@ -20,6 +20,7 @@ public class Transaction {
         return "signature";
     }
 
+    // hacer funcion
     public boolean isValid() {
         // método que siempre devuelve true ya que queda implementar la lógica que compruebe el bloque válido
         // Implementa la lógica de verificación de la firma digital aquí
