@@ -7,7 +7,7 @@ public class Blockchain {
     public Blockchain() {
         this.blocks = new ArrayList<>();
         // primer bloque génesis al inicio de la cadena
-        blocks.add(new Block("0"));
+       // blocks.add(new Block("0"));
     }
 
     public void addBlock(Block block) {
