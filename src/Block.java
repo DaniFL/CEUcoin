@@ -1,26 +1,40 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.security.MessageDigest;
+import java.time.LocalDate;
 
 public class Block {
     private String previousHash;
     private Transaction transaction;
+    private LocalDate time;
+    //private Int index/heigth;
+    private String hash;
 
     public Block(String previousHash, Transaction transaction) {
+        this.previousHash = previousHash;
         this.transaction = transaction;
-        //transaccion aqui
-    }
-
-    public void addTransaction(Transaction transaction) {
-        transaction.add(transaction);
+        this.time = LocalDate.now();
+        this.hash = calculateHash();
     }
 
     public String calculateHash() {
-        // Hay que poner la lógica de creación de hash para el bloque aquí
-        return "blockHash";
+        String dataToHash = previousHash + transaction.toString() + time.toString();
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(dataToHash.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte hashByte : hashBytes) {
+                String hex = Integer.toHexString(0xff & hashByte);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public boolean isValid() {
-        // Falta la lógica de verificación de integridad del bloque aquí
-        return true;
+    public boolean isValid(String previousHash) {
+        return this.previousHash.equals(previousHash) && this.hash.equals(calculateHash());
     }
 }
