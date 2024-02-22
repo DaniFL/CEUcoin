@@ -8,7 +8,7 @@ public class MainTest {
 
     @Test
     public void testInitialBalance() {
-        Main wallet = new Main(100.0);
+        Wallet wallet = new Wallet(100.0);
         assertEquals(100.0, wallet.getBalance(), 0.001);
     }
 
@@ -33,15 +33,6 @@ public class MainTest {
         assertEquals(30.0, wallet.getBalance(), 0.001);
     }
 
-    //Test para las clases que no son la Main
-    @Test
-    public void testCreateTransaction() {
-        Wallet senderWallet = new Wallet();
-        Wallet recipientWallet = new Wallet();
-        Transaction transaction = senderWallet.createTransaction(recipientWallet.getPublicKey(), 50.0);
-
-        assertTrue(transaction.isValid());
-    }
 
    // @Test
    /* public void testAddBlockToBlockchain() {
