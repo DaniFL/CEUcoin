@@ -8,32 +8,23 @@ public class Wallet {
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    public Wallet(double v, String id) {
-        // Implementa la generación de claves públicas y privadas aquí
+    public Wallet(double balance, String id) {
         this.id = id;
+        this.balance = balance;
     }
 
-    public String getPublicKey() {
-        return Base64.getEncoder().encodeToString(publicKey.getEncoded());
-    }
-
-
-    public void send(double amount, String recipient) {
-        if (amount > 0) {
-            balance += amount;
-            // Agregar una transacción al blockchain cada vez que se deposita
-            Transaction transaction = new Transaction(id, recipient, amount);
-            addBlock(transaction);
-        }
-    }
-
-    public void withdraw(double amount) {
-        if (amount > 0 && amount <= balance) {
+    public Transaction send(double amount, String recipient) {
+        Transaction transaction = null;
+        if (balance > amount) {
             balance -= amount;
-            // Agregar una transacción al blockchain cada vez que se retira
-            Transaction transaction = new Transaction("user", "system", -amount);
-            addBlock(transaction);
+            // Agregar una transacción al blockchain cada vez que se deposita
+            transaction = new Transaction(id, recipient, amount);
         }
+        return transaction;
+    }
+
+    public void receive (double amount) {
+            balance += amount;
     }
 
     public double getBalance() {

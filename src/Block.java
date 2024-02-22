@@ -37,4 +37,8 @@ public class Block {
     public boolean isValid(String previousHash) {
         return this.previousHash.equals(previousHash) && this.hash.equals(calculateHash());
     }
+
+    public String getHash() {
+        return hash;
+    }
 }
