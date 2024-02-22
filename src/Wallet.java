@@ -2,6 +2,7 @@ import java.security.*;
 import java.util.Base64;
 
 public class Wallet {
+    // Id de la tarjeta
     private PublicKey publicKey;
     private PrivateKey privateKey;
 

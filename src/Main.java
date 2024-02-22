@@ -3,6 +3,10 @@ import java.util.Base64;
 
 public class Main {
     private double balance;
+    //generamos bloques
+    // inicializamos el blockchain
+    // Hash del bloque anterior
+
 
     public Main(double initialBalance) {
         this.balance = initialBalance;

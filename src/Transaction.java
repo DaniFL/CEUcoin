@@ -21,6 +21,8 @@ public class Transaction {
     }
 
     // hacer funcion
+    // Una transaccion por bloque flecha cantidad...etc
+
     public boolean isValid() {
         // método que siempre devuelve true ya que queda implementar la lógica que compruebe el bloque válido
         // Implementa la lógica de verificación de la firma digital aquí

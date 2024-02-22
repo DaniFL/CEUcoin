@@ -3,15 +3,15 @@ import java.util.List;
 
 public class Block {
     private String previousHash;
-    private List<Transaction> transactions;
+    private Transaction transaction;
 
-    public Block(String previousHash) {
-        this.previousHash = previousHash;
-        this.transactions = new ArrayList<>();
+    public Block(String previousHash, Transaction transaction) {
+        this.transaction = transaction;
+        //transaccion aqui
     }
 
     public void addTransaction(Transaction transaction) {
-        transactions.add(transaction);
+        transaction.add(transaction);
     }
 
     public String calculateHash() {
