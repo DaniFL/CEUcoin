@@ -14,21 +14,21 @@ public class MainTest {
 
     @Test
     public void testDeposit() {
-        Main wallet = new Main(50.0);
+        Wallet wallet = new Wallet(50.0);
         wallet.deposit(30.0);
         assertEquals(80.0, wallet.getBalance(), 0.001);
     }
 
     @Test
     public void testWithdrawSufficientFunds() {
-        Main wallet = new Main(50.0);
+        Wallet wallet = new Wallet(50.0);
         wallet.withdraw(20.0);
         assertEquals(30.0, wallet.getBalance(), 0.001);
     }
 
     @Test
     public void testWithdrawInsufficientFunds() {
-        Main wallet = new Main(30.0);
+        Wallet wallet = new Wallet(30.0);
         wallet.withdraw(50.0);
         assertEquals(30.0, wallet.getBalance(), 0.001);
     }

@@ -3,15 +3,14 @@ import java.util.Base64;
 
 public class Wallet {
     // Id de la tarjeta
+    private final String id;
     private double balance;
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    public Wallet(double v) {
+    public Wallet(double v, String id) {
         // Implementa la generación de claves públicas y privadas aquí
-        KeyPair keyPair = generateKeyPair();
-        this.publicKey = keyPair.getPublic();
-        this.privateKey = keyPair.getPrivate();
+        this.id = id;
     }
 
     public String getPublicKey() {
@@ -19,11 +18,11 @@ public class Wallet {
     }
 
 
-    public void deposit(double amount) {
+    public void send(double amount, String recipient) {
         if (amount > 0) {
             balance += amount;
             // Agregar una transacción al blockchain cada vez que se deposita
-            Transaction transaction = new Transaction("system", "user", amount);
+            Transaction transaction = new Transaction(id, recipient, amount);
             addBlock(transaction);
         }
     }
