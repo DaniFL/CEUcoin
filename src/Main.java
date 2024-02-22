@@ -1,30 +1,33 @@
-import java.security.*;
-import java.util.Base64;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
-    private double balance;
-    //generamos bloques
-    // inicializamos el blockchain
-    // Hash del bloque anterior
+    private static Blockchain blockchain;
 
-
-    public Main(double initialBalance) {
-        this.balance = initialBalance;
+    public static void main(String[] args) {
+        System.out.println(LocalDate.now());
+        blockchain = new Blockchain();
+        // Inicializar el blockchain con un bloque génesis
+        initializeBlockchain();
     }
 
-    public double getBalance() {
-        return balance;
+
+    private static void initializeBlockchain() {
+        // Crear el bloque génesis
+        Block genesisBlock = new Block("0", new Transaction("genesis_sender", "genesis_recipient", 0));
+        // Agregar el bloque génesis al blockchain
+        blockchain.addBlock(genesisBlock);
     }
 
-    public void deposit(double amount) {
-        if (amount > 0) {
-            balance += amount;
-        }
+    private void addBlock(Transaction transaction) {
+        // Obtener el hash del bloque anterior
+        String previousHash = blockchain.get(blockchain.size() - 1).calculateHash();
+        // Crear un nuevo bloque con la transacción y el hash del bloque anterior
+        Block newBlock = new Block(previousHash, transaction);
+        // Agregar el nuevo bloque al blockchain
+        blockchain.addBl(newBlock);
     }
 
-    public void withdraw(double amount) {
-        if (amount > 0 && amount <= balance) {
-            balance -= amount;
-        }
-    }
+
 }
