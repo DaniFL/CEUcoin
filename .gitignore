@@ -28,6 +28,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### Nuevas medidas ###
 /intellij-idea
 /.idea
 /out
