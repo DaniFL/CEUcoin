@@ -7,11 +7,17 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println(LocalDate.now());
-        Blockchain bc = new Blockchain();
-        Wallet wallet = new Wallet(0, "12");
+        blockchain = new Blockchain();
+        Wallet wallet = new Wallet(100, "12");
         Transaction t = wallet.send(10, "11");
-        Block block = new Block(bc.getLatestBlock().getHash(), t);
-
+        blockchain.addBlock(t);
+        System.out.println(blockchain);
+        Transaction t1 = wallet.send(11, "11");
+        blockchain.addBlock(t1);
+        System.out.println(blockchain);
+        Transaction t2 = wallet.send(10, "11");
+        blockchain.addBlock(t2);
+        System.out.println(blockchain);
     }
 
 
