@@ -7,42 +7,30 @@ import static org.junit.Assert.*;
 public class MainTest {
 
     @Test
-    public void testInitialBalance() {
-        Wallet wallet = new Wallet(100.0);
-        assertEquals(100.0, wallet.getBalance(), 0.001);
+    public void testWalletInitialization() {
+        Wallet wallet = new Wallet(50.0, "wallet123");
+        assertEquals("Initial balance is not as expected", 50.0, wallet.getBalance(), 0.001);
+        assertEquals("ID is not as expected", "wallet123", wallet.getId());
     }
 
     @Test
-    public void testDeposit() {
-        Wallet wallet = new Wallet(50.0);
-        wallet.deposit(30.0);
-        assertEquals(80.0, wallet.getBalance(), 0.001);
-    }
+    public void testSimpleTransaction() {
+        Wallet senderWallet = new Wallet(100.0, "sender123");
+        Wallet recipientWallet = new Wallet(50.0, "recipient456");
 
+        Transaction transaction = senderWallet.send(30.0, "recipient456");
+
+        assertNotNull("Transaction should not be null", transaction);
+        assertEquals("Sender balance is not as expected after sending funds", 70.0, senderWallet.getBalance(), 0.001);
+    }
     @Test
-    public void testWithdrawSufficientFunds() {
-        Wallet wallet = new Wallet(50.0);
-        wallet.withdraw(20.0);
-        assertEquals(30.0, wallet.getBalance(), 0.001);
+    public void testBlockInitialization() {
+        Transaction transaction = new Transaction("sender", "recipient", 10.0);
+        Block block = new Block("previousHash", transaction);
+
+        assertNotNull("Block hash should not be null", block.getHash());
     }
 
-    @Test
-    public void testWithdrawInsufficientFunds() {
-        Wallet wallet = new Wallet(30.0);
-        wallet.withdraw(50.0);
-        assertEquals(30.0, wallet.getBalance(), 0.001);
-    }
-
-
-   // @Test
-   /* public void testAddBlockToBlockchain() {
-        Blockchain blockchain = new Blockchain();
-        Block block = new Block(blockchain.getLatestBlock().calculateHash());
-        blockchain.addBlock(block);
-
-        assertTrue(blockchain.isValid());
-    }
-    */
    @Test
    public void testCalculateHash() {
        // Crear un bloque de prueba

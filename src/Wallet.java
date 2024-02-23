@@ -30,4 +30,8 @@ public class Wallet {
     public double getBalance() {
         return balance;
     }
+
+    public String getId(){
+        return id;
+    }
 }
