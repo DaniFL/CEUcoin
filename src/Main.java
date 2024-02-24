@@ -3,11 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    private static Blockchain blockchain;
 
     public static void main(String[] args) {
-        System.out.println(LocalDate.now());
-        blockchain = new Blockchain();
+        Blockchain blockchain = new Blockchain();
         Wallet wallet = new Wallet(100, "12");
         Transaction t = wallet.send(10, "11");
         blockchain.addBlock(t);

@@ -3,15 +3,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Blockchain {
-    private List<Block> chain;
+    private final List<Block> chain;
 
     public Blockchain() {
-        this.chain = new ArrayList<>();
+        this.chain = new ArrayList<Block>();
         Transaction t = new Transaction("system", "system", 0);
-        Block genesis = new Block(null, "genesis hash", t, LocalDateTime.now(), 3, 0);
-        // mejor hacer un metodo statico genesis() en block y que devuelva el bloque genesis
-        //chain.add(Block.genesis)
-        chain.add(genesis);
+        chain.add(Block.genesis(t));
+        System.out.println(chain);
     }
 
     public void addBlock(Transaction transaction) {

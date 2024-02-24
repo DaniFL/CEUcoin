@@ -4,7 +4,7 @@ import java.util.Date;
 import java.time.LocalDate;
 
 public class Block {
-    public static final int MINE_RATE = 3000;
+    public static final long MINE_RATE = 4000;
     private String previousHash;
     private String hash;
     private Transaction transaction;
@@ -20,6 +20,10 @@ public class Block {
         this.time = time;
         this.difficulty = difficulty;
         this.nonce = nonce;
+    }
+
+    public static Block genesis(Transaction transaction){
+        return new Block("undefined", "genesis hash", transaction, LocalDateTime.now(), 5, 0);
     }
 
     private static String calculateHash(String previousHash, Transaction transaction, LocalDateTime time, int difficulty, int nonce) {
@@ -46,8 +50,9 @@ public class Block {
     }*/
 
     public static Block mine(Block previousBlock, Transaction transaction){
-        String previousHash = previousBlock.previousHash;
-        int difficulty = previousBlock.difficulty;
+        String previousHash = previousBlock.getHash();
+        int difficulty = previousBlock.getDifficulty();
+        LocalDateTime prevTime = previousBlock.getTime();
         String hash = "";
         LocalDateTime time;
         int nonce = 0;
@@ -55,20 +60,26 @@ public class Block {
         do{
             nonce += 1;
             time = LocalDateTime.now();
+            /*long timeElapsed = java.time.Duration.between(prevTime, time).getSeconds();
             // si pasa menos de 3 segs (que es el mine rate y lo podemos cambiar) se aumenta
             // la dificultad de minar, sino se baja
-            difficulty = previousBlock.time.plusSeconds(MINE_RATE).isAfter(time) ? difficulty + 1 : difficulty - 1;
+            //difficulty = timeElapsed < MINE_RATE ? difficulty + 1 : difficulty - 1;
+            if (timeElapsed < MINE_RATE) {
+                difficulty += 1; // Si los bloques se están minando muy rápido, aumenta la dificultad
+            } else {
+                difficulty -= 1; // Si los bloques se están minando muy lentamente, disminuye la dificultad
+            }*/
             hash = calculateHash(previousHash, transaction, time, difficulty, nonce);
             // el hash va a ir cambiando hasta que encuentre la misma cantidad de
             // ceros al inicio, que la dificultad
-        } while(hash.substring(0, difficulty).equals("0".repeat(difficulty)));
-
+        } while(!hash.startsWith("0".repeat(difficulty)));
+//        !hash.substring(0, difficulty).equals("0".repeat(difficulty))
         return new Block(previousHash, hash, transaction, time, difficulty, nonce);
     }
 
-    public String getHash() {
-        return hash;
-    }
+    public String getHash() { return hash; }
+    public int getDifficulty(){ return difficulty; }
+    public LocalDateTime getTime(){ return time; }
 
     @Override
     public String toString() {
