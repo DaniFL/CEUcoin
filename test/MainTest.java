@@ -1,7 +1,5 @@
 import org.junit.Test;
 
-import java.util.Date;
-
 import static org.junit.Assert.*;
 
 public class MainTest {
@@ -10,7 +8,7 @@ public class MainTest {
     public void testWalletInitialization() {
         Wallet wallet = new Wallet(50.0, "wallet123");
         assertEquals("Initial balance is not as expected", 50.0, wallet.getBalance(), 0.001);
-        assertEquals("ID is not as expected", "wallet123", wallet.getId());
+        assertEquals("ID is not as expected", "wallet123", wallet.getCardId());
     }
 
     @Test

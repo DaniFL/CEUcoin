@@ -1,24 +1,25 @@
 import java.security.*;
-import java.util.Base64;
 
 public class Wallet {
-    // Id de la tarjeta
-    private final String id;
+    private final String cardId;
     private double balance;
-    private PublicKey publicKey;
+    public PublicKey publicKey;
     private PrivateKey privateKey;
 
     public Wallet(double balance, String id) {
-        this.id = id;
+        this.cardId = id;
         this.balance = balance;
     }
 
-    public Transaction send(double amount, String recipient) {
+    public Transaction send(double amount, Wallet recipient) {
         Transaction transaction = null;
         if (balance > amount) {
             balance -= amount;
-            // Agregar una transacción al blockchain cada vez que se deposita
-            transaction = new Transaction(id, recipient, amount);
+            recipient.receive(amount);
+            // Agregar una transacción al blockchain cada vez que se deposita. Comprobar si mejor
+            // una vez que se añada la transaccion al blockchain ahi recien debito y deposito el
+            // dinero en las cuentas. Sino return exception "no se realizo la transaccion"
+            transaction = new Transaction(cardId, recipient.getCardId(), amount);
         }
         return transaction;
     }
@@ -31,7 +32,7 @@ public class Wallet {
         return balance;
     }
 
-    public String getId(){
-        return id;
+    public String getCardId(){
+        return cardId;
     }
 }
