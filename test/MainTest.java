@@ -32,29 +32,6 @@ public class MainTest {
     }
      */
 
-   /*@Test
-   public void testCalculateHash() {
-       // Crear un bloque de prueba
-       Block block1 = new Block("0", new Transaction("hash_sender_Alice", "hash_recipient_Bob", 10));
-       Block block2 = new Block(block1.calculateHash(), new Transaction("hash_sender_Bob", "hash_recipient_Charlie", 5));
-
-       // Calcular los hashes
-       String hash1 = block1.calculateHash();
-       String hash2 = block2.calculateHash();
-
-       // Asegurar que los hashes no son nulos
-       assertNotNull(hash1);
-       assertNotNull(hash2);
-
-       // Asegurar que los hashes son diferentes para bloques diferentes
-       assertNotEquals(hash1, hash2);
-
-       // Asegurar que el hash se calcula correctamente
-       assertEquals(hash1, block1.calculateHash());
-   }
-    */
-
-   // arreglar este test faltar gets del id del destinatario y el que manda
    @Test
    public void testSendMoney() {
        Wallet sender = new Wallet(100.0, "senderCardId");
@@ -87,6 +64,19 @@ public class MainTest {
         Wallet wallet = new Wallet(100.0, "cardId");
 
         assertEquals(100.0, wallet.getBalance(), 0.001);
+    }
+
+    @Test
+    public void testMineBlock() {
+        Transaction transaction = new Transaction("sender123", "recipient456", 30.0);
+        Block previousBlock = Block.genesis(transaction);
+
+        Block minedBlock = Block.mine(previousBlock, transaction);
+
+        assertNotNull(minedBlock);
+        assertEquals(previousBlock.getHash(), minedBlock.getPreviousHash());
+        assertNotNull(minedBlock.getHash());
+        assertNotNull(minedBlock.getTransaction());
     }
 }
 

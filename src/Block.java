@@ -92,4 +92,12 @@ public class Block {
                 ", nonce=" + nonce +
                 '}';
     }
+
+    public String getPreviousHash() {
+        return previousHash;
+    }
+
+    public Object getTransaction() {
+        return transaction;
+    }
 }
