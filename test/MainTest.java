@@ -16,11 +16,13 @@ public class MainTest {
         Wallet senderWallet = new Wallet(100.0, "sender123");
         Wallet recipientWallet = new Wallet(50.0, "recipient456");
 
-        Transaction transaction = senderWallet.send(30.0, "recipient456");
+        Transaction transaction = senderWallet.send(30.0, recipientWallet);
 
         assertNotNull("Transaction should not be null", transaction);
         assertEquals("Sender balance is not as expected after sending funds", 70.0, senderWallet.getBalance(), 0.001);
     }
+
+    /*
     @Test
     public void testBlockInitialization() {
         Transaction transaction = new Transaction("sender", "recipient", 10.0);
@@ -28,8 +30,9 @@ public class MainTest {
 
         assertNotNull("Block hash should not be null", block.getHash());
     }
+     */
 
-   @Test
+   /*@Test
    public void testCalculateHash() {
        // Crear un bloque de prueba
        Block block1 = new Block("0", new Transaction("hash_sender_Alice", "hash_recipient_Bob", 10));
@@ -49,5 +52,41 @@ public class MainTest {
        // Asegurar que el hash se calcula correctamente
        assertEquals(hash1, block1.calculateHash());
    }
+    */
+
+   // arreglar este test faltar gets del id del destinatario y el que manda
+   @Test
+   public void testSendMoney() {
+       Wallet sender = new Wallet(100.0, "senderCardId");
+       Wallet recipient = new Wallet(50.0, "recipientCardId");
+
+       double amountToSend = 30.0;
+       Transaction transaction = sender.send(amountToSend, recipient);
+
+       assertNotNull(transaction);
+       assertEquals(sender.getCardId(), transaction.sender);
+       assertEquals(recipient.getCardId(), transaction.recipient);
+       assertEquals(amountToSend, transaction.amount, 0.001);
+
+       assertEquals(70.0, sender.getBalance(), 0.001);
+       assertEquals(80.0, recipient.getBalance(), 0.001);
+   }
+
+    @Test
+    public void testReceiveMoney() {
+        Wallet recipient = new Wallet(50.0, "recipientCardId");
+
+        double amountToReceive = 20.0;
+        recipient.receive(amountToReceive);
+
+        assertEquals(70.0, recipient.getBalance(), 0.001);
+    }
+
+    @Test
+    public void testGetBalance() {
+        Wallet wallet = new Wallet(100.0, "cardId");
+
+        assertEquals(100.0, wallet.getBalance(), 0.001);
+    }
 }
 

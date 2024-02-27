@@ -6,17 +6,21 @@ public class Main {
 
     public static void main(String[] args) {
         Blockchain blockchain = new Blockchain();
-        Wallet wallet = new Wallet(100, "12");
-        Transaction t = wallet.send(10, "11");
+        Wallet wallet1 = new Wallet(100, "12");
+        Wallet wallet2 = new Wallet(0, "11"); // Crear otra instancia de Wallet para el destinatario
+        Transaction t = wallet1.send(10, wallet2); // Usar la instancia wallet2 como destinatario
         blockchain.addBlock(t);
         System.out.println(blockchain);
-        Transaction t1 = wallet.send(11, "11");
+
+        Transaction t1 = wallet1.send(11, wallet2); // Usar la instancia wallet2 como destinatario
         blockchain.addBlock(t1);
         System.out.println(blockchain);
-        Transaction t2 = wallet.send(10, "11");
+
+        Transaction t2 = wallet1.send(10, wallet2); // Usar la instancia wallet2 como destinatario
         blockchain.addBlock(t2);
         System.out.println(blockchain);
     }
+
 
 
    /* private static void initializeBlockchain() {
