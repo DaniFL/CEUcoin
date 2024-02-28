@@ -1,4 +1,4 @@
-# CEUcoin - Proyecto de Blockchain Innovation Week
+# CEUcoin - Proyecto de ceuCoin.Blockchain Innovation Week
 
 ## Descripción del Proyecto
 
@@ -13,7 +13,7 @@ Este proyecto implementa una cadena de bloques en Java para crear y gestionar CE
 
 ## Uso del Proyecto
 
-1. Inicia la cadena de bloques ejecutando la clase `Main`.
+1. Inicia la cadena de bloques ejecutando la clase `ceuCoin.Main`.
 2. Realiza transacciones para transferir CEUcoin entre usuarios.
 3. Mina bloques para agregar transacciones a la cadena.
 
@@ -26,7 +26,7 @@ Este proyecto implementa una cadena de bloques en Java para crear y gestionar CE
 
 1. Clona este repositorio.
 2. Abre el proyecto en tu entorno de desarrollo.
-3. Ejecuta la clase `Main` para iniciar la cadena de bloques.
+3. Ejecuta la clase `ceuCoin.Main` para iniciar la cadena de bloques.
 
 
 

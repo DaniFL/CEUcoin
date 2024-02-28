@@ -1,13 +1,12 @@
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+package ceuCoin;
+import user.*;
 
 public class Main {
 
     public static void main(String[] args) {
         Blockchain blockchain = new Blockchain();
         Wallet wallet1 = new Wallet(100, "12");
-        Wallet wallet2 = new Wallet(0, "11"); // Crear otra instancia de Wallet para el destinatario
+        Wallet wallet2 = new Wallet(0, "11"); // Crear otra instancia de user.Wallet para el destinatario
         Transaction t = wallet1.send(10, wallet2); // Usar la instancia wallet2 como destinatario
         blockchain.addBlock(t);
         System.out.println(blockchain);
@@ -25,7 +24,7 @@ public class Main {
 
    /* private static void initializeBlockchain() {
         // Crear el bloque génesis
-        Block genesisBlock = new Block("0", new Transaction("genesis_sender", "genesis_recipient", 0));
+        ceuCoin.Block genesisBlock = new ceuCoin.Block("0", new ceuCoin.Transaction("genesis_sender", "genesis_recipient", 0));
         // Agregar el bloque génesis al blockchain
         blockchain.addBlock(genesisBlock);
     }

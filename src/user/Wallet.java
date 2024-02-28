@@ -1,3 +1,7 @@
+package user;
+
+import ceuCoin.Transaction;
+
 import java.security.*;
 
 public class Wallet {

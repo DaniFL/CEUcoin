@@ -1,4 +1,7 @@
+import ceuCoin.Block;
+import ceuCoin.Transaction;
 import org.junit.Test;
+import user.Wallet;
 
 import static org.junit.Assert.*;
 
@@ -18,17 +21,17 @@ public class MainTest {
 
         Transaction transaction = senderWallet.send(30.0, recipientWallet);
 
-        assertNotNull("Transaction should not be null", transaction);
+        assertNotNull("ceuCoin.Transaction should not be null", transaction);
         assertEquals("Sender balance is not as expected after sending funds", 70.0, senderWallet.getBalance(), 0.001);
     }
 
     /*
     @Test
     public void testBlockInitialization() {
-        Transaction transaction = new Transaction("sender", "recipient", 10.0);
-        Block block = new Block("previousHash", transaction);
+        ceuCoin.Transaction transaction = new ceuCoin.Transaction("sender", "recipient", 10.0);
+        ceuCoin.Block block = new ceuCoin.Block("previousHash", transaction);
 
-        assertNotNull("Block hash should not be null", block.getHash());
+        assertNotNull("ceuCoin.Block hash should not be null", block.getHash());
     }
      */
 

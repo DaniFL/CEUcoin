@@ -1,7 +1,7 @@
+package ceuCoin;
+
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.time.LocalDate;
 
 public class Block {
     public static final long MINE_RATE = 4000;
@@ -83,7 +83,7 @@ public class Block {
 
     @Override
     public String toString() {
-        return "Block{" +
+        return "ceuCoin.Block{" +
                 "previousHash='" + previousHash + '\'' +
                 ", hash='" + hash + '\'' +
                 ", transaction=" + transaction +

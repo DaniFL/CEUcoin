@@ -1,2 +1,7 @@
-package database;public class JDBCManager {
+package database;
+
+public class JDBCManager {
+
+
+
 }

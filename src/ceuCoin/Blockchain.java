@@ -1,4 +1,5 @@
-import java.time.LocalDateTime;
+package ceuCoin;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Blockchain {
 
     @Override
     public String toString() {
-        return "Blockchain{" +
+        return "ceuCoin.Blockchain{" +
                 "chain=" + chain +
                 '}';
     }
