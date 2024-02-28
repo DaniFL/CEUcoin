@@ -11,23 +11,25 @@ public class Block {
     private LocalDateTime time;
     private int difficulty;
     private int nonce;
+    private final int height;
 
 
-    public Block(String previousHash, String hash, Transaction transaction, LocalDateTime time, int difficulty, int nonce) {
+    public Block(String previousHash, String hash, Transaction transaction, LocalDateTime time, int difficulty, int nonce, int height) {
         this.previousHash = previousHash;
         this.hash = hash;
         this.transaction = transaction;
         this.time = time;
         this.difficulty = difficulty;
         this.nonce = nonce;
+        this.height = height;
     }
 
     public static Block genesis(Transaction transaction){
-        return new Block("undefined", "genesis hash", transaction, LocalDateTime.now(), 5, 0);
+        return new Block("undefined", "genesis hash", transaction, LocalDateTime.now(), 5, 0, 0);
     }
 
-    private static String calculateHash(String previousHash, Transaction transaction, LocalDateTime time, int difficulty, int nonce) {
-        String dataToHash = previousHash + transaction.toString() + time.toString() + String.valueOf(difficulty) + String.valueOf(nonce);
+    private static String calculateHash(String previousHash, Transaction transaction, LocalDateTime time, int difficulty, int nonce, int height) {
+        String dataToHash = previousHash + transaction.toString() + time.toString() + String.valueOf(difficulty) + String.valueOf(nonce) + String.valueOf(height);
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(dataToHash.getBytes());
@@ -56,6 +58,7 @@ public class Block {
         String hash = "";
         LocalDateTime time;
         int nonce = 0;
+        int height = previousBlock.getHeight() + 1;
 
         do{
             nonce += 1;
@@ -69,12 +72,12 @@ public class Block {
             } else {
                 difficulty -= 1; // Si los bloques se están minando muy lentamente, disminuye la dificultad
             }*/
-            hash = calculateHash(previousHash, transaction, time, difficulty, nonce);
+            hash = calculateHash(previousHash, transaction, time, difficulty, nonce, height);
             // el hash va a ir cambiando hasta que encuentre la misma cantidad de
             // ceros al inicio, que la dificultad
         } while(!hash.startsWith("0".repeat(difficulty)));
 //        !hash.substring(0, difficulty).equals("0".repeat(difficulty))
-        return new Block(previousHash, hash, transaction, time, difficulty, nonce);
+        return new Block(previousHash, hash, transaction, time, difficulty, nonce, height);
     }
 
     public String getHash() { return hash; }
@@ -100,4 +103,6 @@ public class Block {
     public Object getTransaction() {
         return transaction;
     }
+
+    public int getHeight() { return height; }
 }
