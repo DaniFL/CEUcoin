@@ -21,11 +21,8 @@ public class Blockchain {
     public Block getLatestBlock() {
         return chain.get(chain.size() - 1);
     }
+    public List<Block> getChain() { return chain; }
 
     @Override
-    public String toString() {
-        return "ceuCoin.Blockchain{" +
-                "chain=" + chain +
-                '}';
-    }
+    public String toString() { return "ceuCoin.Blockchain{" + chain + '}'; }
 }

@@ -6,11 +6,11 @@ import ceuCoin.Transaction;
 import java.sql.*;
 import java.time.LocalDateTime;
 
-public class JDBCManager {
+public class BlockchainManager {
     private static final String DATABASE_URL = "jdbc:sqlite:CEUCoinDB.db";
-    static Connection connection = null;
+    private Connection connection = null;
 
-    public JDBCManager(){
+    public BlockchainManager(){
         try{
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection(DATABASE_URL);

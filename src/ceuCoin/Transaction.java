@@ -1,22 +1,31 @@
 package ceuCoin;
 
-import java.security.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Base64;
 
 public class Transaction {
     public String sender;
     public String recipient;
     public double amount;
-    public LocalDateTime date;
+    public LocalDateTime datetime;
 
     public Transaction(String sender, String recipient, double amount) {
         this.sender = sender;
         this.recipient = recipient;
         this.amount = amount;
-        this.date = LocalDateTime.now();
+        this.datetime = LocalDateTime.now();
     }
+
+    public Transaction(String sender, String recipient, double amount, LocalDateTime datetime) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.amount = amount;
+        this.datetime = datetime;
+    }
+
+    public String getSender() { return sender; }
+    public String getRecipient() { return recipient; }
+    public double getAmount() { return amount; }
+    public LocalDateTime getDatetime() { return datetime; }
 
     @Override
     public String toString() {
@@ -24,7 +33,7 @@ public class Transaction {
                 "sender='" + sender + '\'' +
                 ", recipient='" + recipient + '\'' +
                 ", amount=" + amount +
-                ", date=" + date +
+                ", date=" + datetime +
                 '}';
     }
 }
