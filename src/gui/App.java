@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,9 +21,13 @@ public class App extends JFrame{
 
 
     public App() {
+        super("CEUCoin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(450, 150, 450, 450);
+//        setResizable(false);
+        this.setSize(420, 420);
         setContentPane(mainPanel);
+        ImageIcon img = new ImageIcon("ceuLogo.png");
+        setIconImage(img.getImage());
 
         signIn.addActionListener(new ActionListener() {
             @Override
@@ -32,8 +37,6 @@ public class App extends JFrame{
             }
         });
 
-//        Image img = new ImageIcon(this.getClass().getResource("/ceuLogo.png")).getImage();
-//        icon.setIcon(new ImageIcon(img));
     }
 
     public static void main(String[] args) {
