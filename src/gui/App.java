@@ -7,25 +7,27 @@ import java.awt.event.ActionListener;
 
 public class App extends JFrame{
     private JPanel mainPanel;
-    private JPanel westPanel;
-    private JPanel southPanel;
-    private JPanel eastPanel;
-    private JPanel northPanel;
-    private JLabel usernameLabel;
-    private JLabel passwordLabel;
-    private JLabel titleLabel;
-    private JTextField username;
-    private JPasswordField password;
-    private JButton signUp;
-    private JButton signIn;
+    private JPanel centerPanel, northPanel;
+    private JLabel titleLabel, usernameLabel, passwordLabel, informativeLabel;
+    private JTextField username, password;
+    private JButton signUp, signIn;
 
 
     public App() {
         super("CEUCoin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setResizable(false);
-        this.setSize(420, 420);
+        setResizable(false);
+        setSize(650, 650);
         setContentPane(mainPanel);
+
+//        mainPanel.setBackground(Color.WHITE);
+//        centerPanel.setBackground(Color.WHITE);
+//        northPanel.setBackground(Color.WHITE);
+
+        mainPanel.setBackground(Color.DARK_GRAY);
+        centerPanel.setBackground(Color.DARK_GRAY);
+        northPanel.setBackground(Color.DARK_GRAY);
+
         ImageIcon img = new ImageIcon("ceuLogo.png");
         setIconImage(img.getImage());
 
@@ -34,8 +36,18 @@ public class App extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(null, "Hello " + username.getText() +
                         " your password is: " + password.getText());
+                UserDisplay userDisplay = new UserDisplay(App.this);
+                userDisplay.pack();
+                userDisplay.setVisible(true);
             }
         });
+
+        signIn.setBackground(Color.DARK_GRAY);
+        signUp.setBackground(Color.DARK_GRAY);
+        signIn.setBorder(null);
+        signUp.setBorder(null);
+        username.setBorder(null);
+        password.setBorder(null);
 
     }
 

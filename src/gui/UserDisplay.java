@@ -1,56 +1,36 @@
 package gui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class UserDisplay extends JFrame{
-    private JPanel mainPanel;
-    private JPanel actionPanel;
-    private JButton balance;
-    private JButton blockchain;
-    private JButton contacts;
+    private JPanel mainPanel, actionPanel;
+    private JButton balance, blockchain, contacts;
     private JPanel balancePanel;
-    private JPanel blockchainPanel;
-    private JPanel contactsPanel;
-    private JLabel usernameLabel;
-    private JLabel balanceLabel;
-    private JLabel amount;
+    private JLabel usernameLabel, balanceLabel, amountLabel;
 
-    public UserDisplay() {
+    public UserDisplay(JFrame App) {
         super("CEUCoin");
+        App.setVisible(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(450, 150, 450, 450);
+        setResizable(false);
         setContentPane(mainPanel);
-        balance.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                blockchainPanel.setVisible(false);
-//                contactsPanel.setVisible(false);
-                balancePanel.setVisible(true);
-            }
-        });
 
-        blockchain.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                contactsPanel.setVisible(false);
-//                balancePanel.setVisible(false);
-//                blockchainPanel.setVisible(true);
-            }
-        });
-        contacts.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                balancePanel.setVisible(false);
+        mainPanel.setBackground(Color.GRAY);
+        balancePanel.setBackground(Color.GRAY);
+        actionPanel.setBackground(Color.DARK_GRAY);
 
-            }
-        });
-    }
+        balance.setBackground(Color.DARK_GRAY);
+        balance.setBorder(null);
 
-    public static void main(String[] args) {
-        UserDisplay userDisplay = new UserDisplay();
-        userDisplay.pack();
-        userDisplay.setVisible(true);
+        blockchain.setBackground(Color.DARK_GRAY);
+        blockchain.setBorder(null);
+
+        contacts.setBackground(Color.DARK_GRAY);
+        contacts.setBorder(null);
+
+
     }
 }
