@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 from PIL import Image, ImageTk
 
 class App:
@@ -8,9 +8,17 @@ class App:
         self.root.title("CEUcoin Wallet")
         self.root.geometry("800x800")  # Establecer un tamaño mediano
 
+        # Cargar la imagen del logo en la primera ventana
+        logo_path = "ceulogo.png"  # Cambia la ruta de la imagen según tu necesidad
+        img_logo = Image.open(logo_path)
+        img_logo = ImageTk.PhotoImage(img_logo)
+        logo_label = tk.Label(self.root, image=img_logo)
+        logo_label.image = img_logo
+        logo_label.pack(pady=10)
+
         # Crear botón para abrir la ventana de la billetera
         self.wallet_button = ttk.Button(self.root, text="Mi Wallet", command=lambda: self.open_wallet("CEUcoin.jpeg"))
-        self.wallet_button.pack(pady=20)
+        self.wallet_button.pack(pady=10)
 
     def open_wallet(self, image_path):
         # Crear una nueva ventana para la billetera
@@ -61,7 +69,17 @@ class App:
 
     def receive_money(self):
         # Lógica para recibir dinero
-        print("Dinero recibido")
+
+        # Crear una nueva ventana para mostrar la dirección de la cartera y el saldo
+        receive_money_window = tk.Toplevel(self.root)
+        receive_money_window.title("Recibir Dinero")
+
+        # Simplemente un ejemplo, puedes personalizar esto según tus necesidades
+        label_address = tk.Label(receive_money_window, text="Tu dirección de cartera: XYZ123")
+        label_address.pack(pady=10)
+
+        label_balance = tk.Label(receive_money_window, text="Tu saldo actual: 500 CEU")
+        label_balance.pack(pady=10)
 
     def run(self):
         self.root.mainloop()
