@@ -8,12 +8,12 @@ if __name__ == "__main__":
 
     t = wallet1.send(10, wallet2)  # Usar la instancia wallet2 como destinatario
     blockchain.add_block(t)
-    print(blockchain.chain[-1])
+    print("\n", blockchain.chain[-1], "\n")
 
     t1 = wallet1.send(11, wallet2)  # Usar la instancia wallet2 como destinatario
     blockchain.add_block(t1)
-    print(blockchain.chain[-1])
+    print(blockchain.chain[-1], "\n")
 
     t2 = wallet1.send(10, wallet2)  # Usar la instancia wallet2 como destinatario
     blockchain.add_block(t2)
-    print(blockchain.chain[-1])
+    print(blockchain.chain[-1], "\n")
