@@ -1,37 +1,39 @@
-### IntelliJ IDEA ###
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+# Virtual Environment
+venv/
+env/
+env_bak/
+*.pyc
+*.pyo
+*.pyd
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
+# Editor directories and files
+.idea/
 .vscode/
 
-### Mac OS ###
-.DS_Store
+# Compiled source
+__pycache__/
+*.pyc
 
-### Nuevas medidas ###
-/intellij-idea
-/.idea
-/out
-CEUcoin.iml
-/lib
-```
+# Logs
+*.log
+
+# Database
+db.sqlite3
+
+# Output files
+*.pyc
+*.pyo
+*.pyd
+
+# Dependency directories
+.env/
+
+# Other
+*.swp
+.DS_Store
