@@ -1,7 +1,7 @@
 import sqlite3
-from CEUCoin.Block import Block
-from CEUCoin.Blockchain import Blockchain
-from CEUCoin.Transaction import Transaction
+from CEUcoin.Block import Block
+from CEUcoin.Blockchain import Blockchain
+from CEUcoin.Transaction import Transaction
 from datetime import datetime
 
 class BlockchainManager:

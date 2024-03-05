@@ -1,3 +1,5 @@
+from CEUcoin.Transaction import Transaction
+
 class Wallet:
     def __init__(self, balance, card_id):
         self.card_id = card_id
