@@ -1,53 +1,71 @@
 import tkinter as tk
-from tkinter import messagebox
-from blockchain.Blockchain import *
-from user.Wallet import *
+from tkinter import ttk
+from PIL import Image, ImageTk
+
 class App:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("CEUcoin App")
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("CEUcoin Wallet")
+        self.root.geometry("800x800")  # Establecer un tamaño mediano
 
-        # Crear la instancia de la blockchain y las billeteras
-        self.blockchain = Blockchain()
-        self.wallet1 = Wallet(100, "12")
-        self.wallet2 = Wallet(0, "11")
+        # Crear botón para abrir la ventana de la billetera
+        self.wallet_button = ttk.Button(self.root, text="Mi Wallet", command=lambda: self.open_wallet("CEUcoin.jpeg"))
+        self.wallet_button.pack(pady=20)
 
-        # Configurar la interfaz gráfica
-        self.create_widgets()
+    def open_wallet(self, image_path):
+        # Crear una nueva ventana para la billetera
+        wallet_window = tk.Toplevel(self.root)
+        wallet_window.title("CEUcoin Wallet")
+        wallet_window.geometry("800x800")  # Establecer el mismo tamaño mediano
 
-    def create_widgets(self):
-        # Etiqueta para mostrar el estado de la cadena de bloques
-        self.label_blockchain = tk.Label(self.master, text="CEUcoin Blockchain")
-        self.label_blockchain.pack(pady=10)
+        # Agregar una imagen usando Pillow para cargar imágenes JPEG
+        img = Image.open(image_path)
+        img = ImageTk.PhotoImage(img)
+        img_label = tk.Label(wallet_window, image=img)
+        img_label.image = img
+        img_label.pack(pady=10)
 
-        # Botón para realizar una transacción
-        self.button_transaction = tk.Button(self.master, text="Realizar Transacción", command=self.perform_transaction)
-        self.button_transaction.pack(pady=10)
+        # Botones de enviar y recibir
+        send_button = ttk.Button(wallet_window, text="Enviar", command=self.send_money)
+        send_button.pack(side=tk.LEFT, padx=10)
 
-        # Botón para mostrar el estado de la cadena de bloques
-        self.button_show_blockchain = tk.Button(self.master, text="Mostrar Blockchain", command=self.show_blockchain)
-        self.button_show_blockchain.pack(pady=10)
+        receive_button = ttk.Button(wallet_window, text="Recibir", command=self.receive_money)
+        receive_button.pack(side=tk.RIGHT, padx=10)
 
-    def perform_transaction(self):
-        try:
-            # Realizar una transacción desde wallet1 a wallet2
-            amount = 10
-            transaction = self.wallet1.send(amount, self.wallet2)
-            self.blockchain.add_block(transaction)
+    def send_money(self):
+        # Lógica para enviar dinero
 
-            # Mostrar mensaje de éxito
-            messagebox.showinfo("Éxito", f"Transacción exitosa: {self.wallet1.get_card_id()} envió {amount} a {self.wallet2.get_card_id()}")
-        except Exception as e:
-            # Capturar excepciones y mostrar mensaje de error
-            messagebox.showerror("Error", str(e))
+        # Crear una nueva ventana para que el usuario introduzca la dirección de la cartera y la cantidad
+        send_money_window = tk.Toplevel(self.root)
+        send_money_window.title("Enviar Dinero")
 
-    def show_blockchain(self):
-        # Mostrar el estado actual de la cadena de bloques en la etiqueta
-        blockchain_str = str(self.blockchain)
-        self.label_blockchain.config(text=blockchain_str)
+        # Cuadro de entrada para la dirección de la cartera
+        label_address = tk.Label(send_money_window, text="Introduce la dirección de la cartera:")
+        label_address.pack(pady=5)
+        entry_address = tk.Entry(send_money_window)
+        entry_address.pack(pady=5)
 
-# Ejemplo de uso
+        # Cuadro de entrada para la cantidad
+        label_amount = tk.Label(send_money_window, text="Introduce la cantidad a enviar:")
+        label_amount.pack(pady=5)
+        entry_amount = tk.Entry(send_money_window)
+        entry_amount.pack(pady=5)
+
+        # Botón para confirmar el envío
+        confirm_button = ttk.Button(send_money_window, text="Confirmar", command=lambda: self.confirm_send(entry_address.get(), entry_amount.get()))
+        confirm_button.pack(pady=10)
+
+    def confirm_send(self, address, amount):
+        # Lógica para confirmar el envío
+        print(f"Enviando {amount} CEU a la dirección: {address}")
+
+    def receive_money(self):
+        # Lógica para recibir dinero
+        print("Dinero recibido")
+
+    def run(self):
+        self.root.mainloop()
+
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = App(root)
-    root.mainloop()
+    app = App()
+    app.run()
