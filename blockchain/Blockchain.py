@@ -19,6 +19,6 @@ class Blockchain:
         return self.chain
 
     def __str__(self):
-        return f"ceuCoin.Blockchain{{{self.chain}}}"
+        return f"Blockchain = {self.chain}"
 
 
