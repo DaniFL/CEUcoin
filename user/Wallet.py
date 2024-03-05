@@ -1,4 +1,4 @@
-from CEUcoin.Transaction import Transaction
+from blockchain import Transaction
 
 class Wallet:
     def __init__(self, balance, card_id):

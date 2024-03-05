@@ -1,5 +1,5 @@
-from CEUcoin import Block
-from CEUcoin import Transaction
+from blockchain.Block import *
+from blockchain.Transaction import *
 
 class Blockchain:
     def __init__(self):

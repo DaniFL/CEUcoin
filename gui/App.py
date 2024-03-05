@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-from CEUcoin.Blockchain import Blockchain
-from user.Wallet import Wallet
-
+from blockchain.Blockchain import *
+from user.Wallet import *
 class App:
     def __init__(self, master):
         self.master = master

@@ -1,5 +1,5 @@
-from CEUcoin.Blockchain import Blockchain
-from user.Wallet import Wallet
+from blockchain.Blockchain import *
+from user.Wallet import *
 
 if __name__ == "__main__":
     blockchain = Blockchain()
