@@ -1,4 +1,4 @@
-from ceu import Blockchain
+from CEUCoin import Blockchain
 from user.Wallet import Wallet
 
 if __name__ == "__main__":

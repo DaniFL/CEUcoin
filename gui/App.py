@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from ceu.Blockchain import Blockchain
+from CEUCoin.Blockchain import Blockchain
 from user.Wallet import Wallet
 
 class App:

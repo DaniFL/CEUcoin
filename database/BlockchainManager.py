@@ -1,7 +1,7 @@
 import sqlite3
-from ceu.Block import Block
-from ceu.Blockchain import Blockchain
-from ceu.Transaction import Transaction
+from CEUCoin.Block import Block
+from CEUCoin.Blockchain import Blockchain
+from CEUCoin.Transaction import Transaction
 from datetime import datetime
 
 class BlockchainManager:
@@ -78,4 +78,25 @@ class BlockchainManager:
             cursor = self.connection.cursor()
 
             query = "SELECT * FROM Block"
-            cursor
+            cursor.execute(query)
+            blocks = cursor.fetchall()
+
+            for block_data in blocks:
+                height, previous_hash, hash_value, datetime_str, difficulty, nonce = block_data
+                block = Block(height, previous_hash, hash_value, datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), difficulty, nonce)
+
+                query = "SELECT * FROM Transaction WHERE block_height = ?"
+                cursor.execute(query, (height,))
+                transactions = cursor.fetchall()
+
+                for transaction_data in transactions:
+                    _, sender, recipient, amount, transaction_datetime_str = transaction_data
+                    transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'))
+                    block.add_transaction(transaction)
+
+                blockchain.add_block(block)
+
+            return blockchain
+        except sqlite3.Error as e:
+            print("Error retrieving blockchain:", e)
+            return None
