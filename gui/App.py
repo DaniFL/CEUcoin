@@ -17,7 +17,7 @@ class App:
         logo_label.pack(pady=10)
 
         # Crear botón para abrir la ventana de la billetera
-        self.wallet_button = ttk.Button(self.root, text="Mi Wallet", command=lambda: self.open_wallet("CEUcoin.jpeg"))
+        self.wallet_button = ttk.Button(self.root, text="Mi Wallet", command=lambda: self.open_wallet("100x100_logo.png"))
         self.wallet_button.pack(pady=10)
 
     def open_wallet(self, image_path):
