@@ -36,7 +36,8 @@ class Transaction:
         self.amount = amount
 
 
-
+# El codigo funciona las tarjetas NO
+        
 #from smartcard.System import readers
 #from smartcard.util import toHexString
 #from smartcard.util import HexListToBinString
