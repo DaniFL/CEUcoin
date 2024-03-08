@@ -4,9 +4,7 @@ from blockchain.Transaction import *
 class Blockchain:
     def __init__(self):
         self.chain = []
-        genesis_transaction = Transaction("system", "system", 0)
-        self.chain.append(Block.genesis(genesis_transaction))
-        print(self.chain)
+        # print(self.chain)
 
     def add_block(self, transaction):
         new_block = Block.mine(self.get_latest_block(), transaction)

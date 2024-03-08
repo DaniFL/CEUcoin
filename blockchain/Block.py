@@ -2,7 +2,7 @@ import hashlib
 from datetime import datetime
 
 class Block:
-    MINE_RATE = 4000
+    # MINE_RATE = 4000
 
     def __init__(self, previous_hash, hash, transaction, datetime, difficulty, nonce, height):
         self.previous_hash = previous_hash
@@ -13,9 +13,9 @@ class Block:
         self.nonce = nonce
         self.height = height
 
-    @classmethod
-    def genesis(cls, transaction):
-        return cls("undefined", "genesis hash", transaction, datetime.now(), 5, 0, 0)
+    # @classmethod
+    # def genesis(cls, transaction):
+    #     return cls("undefined", "genesis hash", transaction, datetime.now(), 5, 0, 0)
 
     @staticmethod
     def calculate_hash(previous_hash, transaction, datetime, difficulty, nonce, height):
