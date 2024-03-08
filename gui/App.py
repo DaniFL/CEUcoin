@@ -6,7 +6,8 @@ class App:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("CEUcoin Wallet")
-        self.root.geometry("800x800")  # Establecer un tamaño mediano
+        self.root.geometry("600x600")  # Establecer un tamaño mediano
+        self.root.resizable(False,False)
 
         # Cargar la imagen del logo en la primera ventana
         logo_path = "ceulogo.png"  # Cambia la ruta de la imagen según tu necesidad
@@ -17,7 +18,7 @@ class App:
         logo_label.pack(pady=10)
 
         # Crear botón para abrir la ventana de la billetera
-        self.wallet_button = ttk.Button(self.root, text="Mi Wallet", command=lambda: self.open_wallet("100x100_logo.png"))
+        self.wallet_button = ttk.Button(self.root, text="Go to my Wallet", command=lambda: self.open_wallet("100x100_logo.png"))
         self.wallet_button.pack(pady=10)
 
     def open_wallet(self, image_path):
