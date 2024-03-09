@@ -1,46 +1,56 @@
-import customtkinter
-from tkinter import PhotoImage
+import customtkinter as ctk
 from PIL import Image, ImageTk
 
-customtkinter.set_appearance_mode("dark")
-customtkinter.set_default_color_theme("blue")
 
-def login():
-    print("Test")
-    print(username_txt.get() + " " + password_txt.get())
+class Prueba:
+    def __init__(self):
+        ctk.set_appearance_mode("dark")
+        ctk.set_default_color_theme("blue")
 
-def change_theme():
-    customtkinter.set_appearance_mode("light")
+        self.root = ctk.CTk()
+        self.root.geometry("400x600")
 
-root = customtkinter.CTk()
-root.geometry("400x600")
+        self.frame = ctk.CTkFrame(master=self.root)
+        self.frame.pack(pady=30, padx=60, fill="both", expand=True)
 
-frame = customtkinter.CTkFrame(master = root)
-frame.pack(pady=30, padx=60, fill="both", expand=True)
+        label = ctk.CTkLabel(master=self.frame, text="CEU COIN", font=("Roboto", 24))
+        label.pack(pady=12, padx=10)
 
-label = customtkinter.CTkLabel(master=frame, text="CEU COIN", font=("Roboto", 24))
-label.pack(pady=12, padx=10)
+        logo_path = "CEUcoin.png"  # Cambia la ruta de la imagen según tu necesidad
+        self.load_and_display_image(logo_path)
 
-# logo_path = "CEUcoin.png"  # Cambia la ruta de la imagen según tu necesidad
-# img_logo = Image.open(logo_path)
-# img_logo = ImageTk.PhotoImage(img_logo)
-# logo_label = customtkinter.CTkLabel(master=frame, image=img_logo, text="")
-# logo_label.image = img_logo
-logo = PhotoImage(file="CEUcoin.png")
-logo_label = customtkinter.CTkLabel(master=frame, image=logo, text="")
-logo_label.pack(pady=20)
+        self.username_txt = ctk.CTkEntry(master=self.frame, placeholder_text="username")
+        self.username_txt.pack(pady=12, padx=10)
 
-username_txt = customtkinter.CTkEntry(master=frame, placeholder_text="username")
-username_txt.pack(pady=12, padx=10)
+        self.password_txt = ctk.CTkEntry(master=self.frame, placeholder_text="password", show="*")
+        self.password_txt.pack(pady=12, padx=10)
 
-password_txt = customtkinter.CTkEntry(master=frame, placeholder_text="password", show="*")
-password_txt.pack(pady=12, padx=10)
+        login_btn = ctk.CTkButton(master=self.frame, text="Log in", command=self.login)
+        login_btn.pack(pady=12, padx=10)
 
-login_btn = customtkinter.CTkButton(master=frame, text="Log in", command=login)
-login_btn.pack(pady=12, padx=10)
+        signup_btn = ctk.CTkButton(master=self.frame, text="Sign up", command=self.change_theme)
+        signup_btn.pack(pady=12, padx=10)
 
-signup_btn = customtkinter.CTkButton(master=frame, text="Sign up", command=change_theme)
-signup_btn.pack(pady=12, padx=10)
+    def load_and_display_image(self, image_path):
+        logo_img = Image.open(image_path)
+        logo_img = ImageTk.PhotoImage(logo_img)
+        logo_label = ctk.CTkLabel(master=self.frame, image=logo_img, text="")
+        logo_label.image = logo_img  # Para evitar que el recolector de basura lo elimine
+        logo_label.pack(pady=20)
 
-root.mainloop()
+    def login(self):
+        print("Test")
+        if hasattr(self, "info_login"):
+            self.info_login.destroy()
+        self.info_login = ctk.CTkLabel(master=self.frame, text="Username or password incorrect")
+        self.info_login.pack(pady=10)
 
+    def change_theme(self):
+        ctk.set_appearance_mode("light")
+
+    def run(self):
+        self.root.mainloop()
+
+if __name__ == "__main__":
+    app = Prueba()
+    app.run()

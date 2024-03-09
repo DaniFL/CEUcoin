@@ -1,11 +1,11 @@
 from datetime import datetime
 
 class Transaction:
-    def __init__(self, sender, recipient, amount):
+    def __init__(self, sender, recipient, amount, datetime=datetime.now):
         self.sender = sender
         self.recipient = recipient
         self.amount = amount
-        self.datetime = datetime.now()
+        self.datetime = datetime
 
     def __str__(self):
         return f"ceuCoin.Transaction{{sender='{self.sender}', recipient='{self.recipient}', amount={self.amount}, datetime={self.datetime}}}"

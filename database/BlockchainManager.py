@@ -24,7 +24,7 @@ class BlockchainManager:
             query = """
                 CREATE TABLE IF NOT EXISTS Transactions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    block_height INTEGER REFERENCES Block(height),
+                    block_height INTEGER REFERENCES Blocks(height),
                     sender TEXT,
                     recipient TEXT,
                     amount REAL,
@@ -124,7 +124,7 @@ class BlockchainManager:
                 transactions = cursor.fetchall()
 
                 for transaction_data in transactions:
-                    _, sender, recipient, amount, transaction_datetime_str = transaction_data
+                    _, _, sender, recipient, amount, transaction_datetime_str = transaction_data
                     transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'))
                     
 
