@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from databaseManager.BlockchainManager import *
+from databaseManager.BlockchainManager import BlockchainManager
 
 class Menu:
     def __init__(self, blockchainManager):
@@ -53,7 +53,7 @@ class BalanceFrame(ctk.CTkFrame):
         ctk.CTkLabel(master=self, text="BALANCE FRAME").pack(fill="both", expand=True)
         self.grid(row=0, pady=5, padx=10, sticky="nsew")
 
-    def showBlockchain(self)
+    #def showBlockchain(self):
 
 
 class BlockchainFrame(ctk.CTkFrame):

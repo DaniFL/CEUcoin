@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
-from databaseManager.BlockchainManager import *
+#from databaseManager.BlockchainManager import *
 
 
 class Login:
@@ -20,8 +20,7 @@ class Login:
         label = ctk.CTkLabel(master=self.frame, text="CEU COIN", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
 
-        logo_path = "images/CEUcoin.png"  # Cambia la ruta de la imagen según tu necesidad
-        self.load_and_display_image(logo_path)
+        self.load_and_display_image("images/CEUcoin.png")
 
         self.username_txt = ctk.CTkEntry(master=self.frame, placeholder_text="username")
         self.username_txt.pack(pady=12, padx=10)

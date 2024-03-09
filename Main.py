@@ -1,17 +1,18 @@
 from blockchain.Blockchain import *
 from user.Wallet import *
 from gui.App import App
+from gui.Menu import Menu
 from databaseManager.BlockchainManager import BlockchainManager
 
-def main():
-    app = App() 
-    app.run()    
+def main(blockchainmanager):
+    app = App(blockchainmanager) 
+    app.run()   
 
 
 if __name__ == "__main__":
-    # main()
     blockchain_manager = BlockchainManager()
     blockchain = blockchain_manager.get_blockchain()
+    main(blockchain_manager)
     
     for block in blockchain.get_chain():
         print(block)
