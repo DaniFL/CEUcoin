@@ -7,8 +7,14 @@ class Transaction:
         self.amount = amount
         self.datetime = datetime
 
+    # def __str__(self):
+    #     return (f"\n\tsender= {self.sender}" 
+    #             f"\n\trecipient= {self.recipient}"
+    #             f"\n\tamount= {self.amount}" 
+    #             f"\n\tdatetime= {self.datetime}")
+        
     def __str__(self):
-        return f"ceuCoin.Transaction{{sender='{self.sender}', recipient='{self.recipient}', amount={self.amount}, datetime={self.datetime}}}"
+        return (f"{self.sender} --> {self.recipient}, amount = {self.amount} CEUs, datetime = {self.datetime}")
 
     def get_sender(self):
         return self.sender

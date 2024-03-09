@@ -42,7 +42,14 @@ class Block:
         return Block(previous_hash, hash_value, transaction, datetime_now, difficulty, nonce, height)
 
     def __str__(self):
-        return f"\nBlock previous_hash='{self.previous_hash}', \nhash='{self.hash}', \ntransaction={self.transaction}, \ndatetime={self.datetime}, \ndifficulty={self.difficulty}, \nnonce={self.nonce})"
+        return (f"Block height: {self.height}\n"
+                f"hash: {self.hash}\n"
+                f"datetime: {self.datetime}\n"
+                f"transaction: {self.transaction}\n"
+                f"difficulty: {self.difficulty}\n"
+                f"nonce: {self.nonce}\n"
+                f"previous hash: {self.previous_hash}")
+
 
     def get_previous_hash(self):
         return self.previous_hash

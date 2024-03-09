@@ -3,3 +3,6 @@ class User:
         self.username = username
         self.password = passsword
         # Faltaria que poner el wallet tambien
+
+    def __str__(self):
+        return f"User: {self.username}, Password: {self.password}"

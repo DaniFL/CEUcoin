@@ -55,6 +55,9 @@ class BlockchainManager:
             """
             cursor.execute(query)
 
+            query = "INSERT INTO Userdata (username, password) VALUES (?, ?)"
+            cursor.execute(query, ("user", "user"))
+
             self.connection.commit()
         except sqlite3.Error as e:
             print("Error creating tables:", e)
@@ -150,3 +153,21 @@ class BlockchainManager:
         except sqlite3.Error as e:
             print("Error verifying user:", e)
             return None
+        
+    # def check_user(self, username, password):
+    #     try:
+    #         cursor = self.connection.cursor()
+    #         query = "SELECT * FROM Userdata WHERE username = ? AND password = ?"
+    #         cursor.execute(query, (username, password))
+    #         userdata = cursor.fetchone()
+            
+    #         if userdata is not None:
+    #             _, db_username, db_password = userdata
+    #             return User(db_username, db_password)
+    #         else:
+    #             return None
+
+    #     except sqlite3.Error as e:
+    #         print("Error verifying user:", e)
+    #         return None
+

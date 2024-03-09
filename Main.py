@@ -1,21 +1,21 @@
 from blockchain.Blockchain import *
 from user.Wallet import *
 from gui.App import App
-from gui.Menu import Menu
+from gui.Login import Login
 from databaseManager.BlockchainManager import BlockchainManager
 
 def main(blockchainmanager):
-    app = App(blockchainmanager) 
-    app.run()   
+    login = Login(blockchainmanager) 
+    login.run()   
 
 
 if __name__ == "__main__":
-    blockchain_manager = BlockchainManager()
-    blockchain = blockchain_manager.get_blockchain()
-    main(blockchain_manager)
+    blockchainmanager = BlockchainManager()
+    # blockchain = blockchainmanager.get_blockchain()
+    main(blockchainmanager)
     
-    for block in blockchain.get_chain():
-        print(block)
+    # for block in blockchain.get_chain():
+    #     print(block)
     # wallet1 = Wallet(100, "12")
     # wallet2 = Wallet(0, "11")  # Crear otra instancia de user.Wallet para el destinatario
 
