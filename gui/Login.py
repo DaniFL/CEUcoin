@@ -1,10 +1,12 @@
 import customtkinter as ctk
+from gui.Menu import Menu
 from PIL import Image, ImageTk
-#from databaseManager.BlockchainManager import *
+from databaseManager.BlockchainManager import *
 
 
 class Login:
-    def __init__(self):
+    def __init__(self, blockchainmanager):
+        self.blockchainmanager = blockchainmanager
 
         # Creation of main window
         ctk.set_appearance_mode("dark")
@@ -20,6 +22,7 @@ class Login:
         label = ctk.CTkLabel(master=self.frame, text="CEU COIN", font=("Roboto", 24))
         label.pack(pady=12, padx=10)
 
+
         self.load_and_display_image("images/CEUcoin.png")
 
         self.username_txt = ctk.CTkEntry(master=self.frame, placeholder_text="username")
@@ -28,7 +31,7 @@ class Login:
         self.password_txt = ctk.CTkEntry(master=self.frame, placeholder_text="password", show="*")
         self.password_txt.pack(pady=12, padx=10)
 
-        login_btn = ctk.CTkButton(master=self.frame, text="Log in", command=self.login)
+        login_btn = ctk.CTkButton(master=self.frame, text="Log in", command=lambda: self.open_wallet(self.blockchainmanager))
         login_btn.pack(pady=12, padx=10)
 
         signup_btn = ctk.CTkButton(master=self.frame, text="Sign up", command=self.change_theme)
@@ -44,12 +47,13 @@ class Login:
         logo_label.image = logo_img  # Para evitar que el recolector de basura lo elimine
         logo_label.pack(pady=20)
 
-    def login(self):
+    def login(self,blockchainmanager):
         print("Test")
-        user = BlockchainManager.check_user(self.username_txt.get, self.password_txt.get)
+        user = blockchainmanager.check_user(self.username_txt.get, self.password_txt.get)
         if user == None :
             self.info_login.configure(text="Username or password incorrect")
         else:
+            menu = Menu(blockchainmanager)
             print("usuario existe aqui se abriria la otra ventana")
 
     # def signup(self):
