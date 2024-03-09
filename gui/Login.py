@@ -1,9 +1,10 @@
+from typing import Tuple
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from databaseManager.BlockchainManager import *
 
 
-class Prueba:
+class Login:
     def __init__(self):
 
         # Creation of main window
@@ -63,7 +64,9 @@ class Prueba:
 
     def run(self):
         self.root.mainloop()
-
+        
+        
 if __name__ == "__main__":
-    app = Prueba()
+    app = Login()
     app.run()
+

@@ -6,7 +6,7 @@ from user.User import *
 from datetime import datetime
 
 class BlockchainManager:
-    DATABASE_URL = "CEUCoinDB.db"
+    DATABASE_URL = "database/CEUCoinDB.db"
 
     def __init__(self):
         try:
