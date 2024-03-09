@@ -1,3 +1,4 @@
+from PIL import Image, ImageTk
 import customtkinter as ctk
 from databaseManager.BlockchainManager import BlockchainManager
 
@@ -50,8 +51,33 @@ class Menu:
 class BalanceFrame(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        ctk.CTkLabel(master=self, text="BALANCE FRAME").pack(fill="both", expand=True)
-        self.grid(row=0, pady=5, padx=10, sticky="nsew")
+
+        # Cargar y mostrar la imagen de la tarjeta
+        image_path = "images/Lamejortarjetav2.png"
+        pil_image = Image.open(image_path)
+        tk_image = ImageTk.PhotoImage(pil_image)
+
+        # Mostrar la imagen en un CTkLabel
+        image_label = ctk.CTkLabel(self, image=tk_image, text = "")
+        image_label.image = tk_image  # Guardar referencia a la imagen
+        image_label.pack(pady=10)
+
+
+        # Crear y mostrar etiqueta con el saldo actual
+        balance_label = ctk.CTkLabel(self, text="Current Balance = 50 CEUs")
+        balance_label.pack(pady=10)
+
+        # Crear y mostrar etiqueta con la dirección de la wallet
+        address_label = ctk.CTkLabel(self, text="1234567890123456789A")
+        address_label.pack(pady=10)
+
+        # Crear y mostrar botón para enviar dinero
+        send_money_button = ctk.CTkButton(self, text="Send Money", command=self.send_money)
+        send_money_button.pack(pady=10)
+
+    def send_money(self):
+        # Implementar la funcionalidad para enviar dinero
+        print("Implementar lógica para enviar dinero")
 
     #def showBlockchain(self):
 
@@ -60,6 +86,8 @@ class BlockchainFrame(ctk.CTkFrame):
     def __init__(self, parent, blockchainManager):
         super().__init__(parent)
         ctk.CTkLabel(master=self, text="BLOCKCHAIN FRAME").pack(fill="both", expand=True)
+
+
 
 
 
