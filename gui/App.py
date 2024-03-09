@@ -10,7 +10,7 @@ class App:
         self.root.resizable(False,False)
 
         # Cargar la imagen del logo en la primera ventana
-        logo_path = "ceulogo.png"  # Cambia la ruta de la imagen según tu necesidad
+        logo_path = "images/ceulogo.png"  # Cambia la ruta de la imagen según tu necesidad
         img_logo = Image.open(logo_path)
         img_logo = ImageTk.PhotoImage(img_logo)
         logo_label = tk.Label(self.root, image=img_logo)

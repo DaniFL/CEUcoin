@@ -2,6 +2,7 @@ import sqlite3
 from blockchain.Block import *
 from blockchain.Blockchain import *
 from blockchain.Transaction import *
+from user.User import *
 from datetime import datetime
 
 class BlockchainManager:
@@ -135,4 +136,17 @@ class BlockchainManager:
             return blockchain
         except sqlite3.Error as e:
             print("Error retrieving blockchain:", e)
+            return None
+        
+    def check_user(self, username, password):
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM Userdata WHERE username = ? AND password = ?"
+            cursor.execute(query, (username, password))
+            userdata = cursor.fetchone()
+            _, username, password = userdata
+            return User(username, password)
+
+        except sqlite3.Error as e:
+            print("Error verifying user:", e)
             return None

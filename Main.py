@@ -1,7 +1,7 @@
 from blockchain.Blockchain import *
 from user.Wallet import *
 from gui.App import App
-from database.BlockchainManager import BlockchainManager
+from databaseManager.BlockchainManager import BlockchainManager
 
 def main():
     app = App() 
