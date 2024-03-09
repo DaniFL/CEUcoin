@@ -1,4 +1,3 @@
-from typing import Tuple
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from databaseManager.BlockchainManager import *
@@ -65,7 +64,7 @@ class Login:
     def run(self):
         self.root.mainloop()
         
-        
+
 if __name__ == "__main__":
     app = Login()
     app.run()
