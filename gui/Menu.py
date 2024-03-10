@@ -1,17 +1,23 @@
 from PIL import Image, ImageTk
 import customtkinter as ctk
-from databaseManager.BlockchainManager import BlockchainManager
+from databaseManager.BlockchainManager import *
+from user.User import *
+from user.Wallet import *
 
 class Menu:
-    def __init__(self, blockchainmanager):
+    def __init__(self, blockchainmanager, user):
         self.blockchainmanager = blockchainmanager
         self.root = ctk.CTk()
         self.root.geometry("500x550")
+        self.root.title("CEU Wallet")
+        image = Image.open("images/CEUlogo.png")
+        photo = ImageTk.PhotoImage(image)
+        self.root.iconphoto(True, photo)
 
         self.mainframe = ctk.CTkFrame(master=self.root, height=450)
         self.mainframe.grid(row=0, pady=15, padx=10, sticky="nsew")
 
-        self.frameList = [BalanceFrame(self.root), BlockchainFrame(self.root, self.blockchainmanager), ContactsFrame(self.root)]
+        self.frameList = [BalanceFrame(self.root, self.blockchainmanager, user), BlockchainFrame(self.root, self.blockchainmanager), SettingsFrame(self.root)]
         self.frameList[0].grid(row=0, pady=5, padx=10, sticky="nsew")
         self.frameList[1].grid_forget()
         self.frameList[2].grid_forget()
@@ -25,7 +31,7 @@ class Menu:
         blockchain_btn = ctk.CTkButton(master=self.buttonframe, text="Blockchain", command=self.showBlockchainFrame)
         blockchain_btn.grid(row=0, column=1, padx=10, pady=10)
 
-        contacts_btn = ctk.CTkButton(master=self.buttonframe, text="My contacts", command=self.showContactsFrame)
+        contacts_btn = ctk.CTkButton(master=self.buttonframe, text="Settings", command=self.showSettingsFrame)
         contacts_btn.grid(row=0, column=2, padx=10, pady=10)
 
     
@@ -40,7 +46,7 @@ class Menu:
         self.frameList[2].grid_forget()
         self.frameList[1].grid(row=0, pady=5, padx=10, sticky="nsew")
 
-    def showContactsFrame(self):
+    def showSettingsFrame(self):
         self.frameList[0].grid_forget()
         self.frameList[1].grid_forget()
         self.frameList[2].grid(row=0, pady=5, padx=10, sticky="nsew")
@@ -50,7 +56,7 @@ class Menu:
 
 
 class BalanceFrame(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, blockchainmanager, user):
         super().__init__(parent)
 
         # Cargar y mostrar la imagen de la tarjeta
@@ -64,11 +70,11 @@ class BalanceFrame(ctk.CTkFrame):
         image_label.pack(pady=10)
 
         # Crear y mostrar etiqueta con el saldo actual
-        balance_label = ctk.CTkLabel(self, text="Current Balance = 50 CEUs")
+        balance_label = ctk.CTkLabel(self, text=f"Current Balance: {user.get_wallet().get_balance()} CEUs", font=("size", 16))
         balance_label.pack(pady=10)
 
         # Crear y mostrar etiqueta con la dirección de la wallet
-        address_label = ctk.CTkLabel(self, text="1234567890123456789A")
+        address_label = ctk.CTkLabel(self, text=f"Card ID: {user.get_wallet().get_card_id()}")
         address_label.pack(pady=10)
 
         # Crear y mostrar botón para enviar dinero
@@ -92,18 +98,19 @@ class SendMoneyDialog:
 
         self.dialog = ctk.CTkToplevel(parent)
         self.dialog.title("Send Money")
+        self.dialog.geometry("300x200")
 
         self.recipient_entry = ctk.CTkEntry(self.dialog, placeholder_text="Recipient card ID")
-        self.recipient_entry.pack(padx=10, pady=5)
+        self.recipient_entry.pack(pady=10)
 
         self.amount_entry = ctk.CTkEntry(self.dialog, placeholder_text="Amount")
-        self.amount_entry.pack(padx=10, pady=5)
+        self.amount_entry.pack(pady=10)
 
         self.pin_entry = ctk.CTkEntry(self.dialog, placeholder_text="PIN", show="*")
-        self.pin_entry.pack(padx=10, pady=5)
+        self.pin_entry.pack(pady=10)
 
         send_button = ctk.CTkButton(self.dialog, text="Send", command=self.send)
-        send_button.pack(pady=10)
+        send_button.pack(pady=15)
 
     def show(self):
         self.dialog.grab_set()
@@ -137,15 +144,53 @@ class BlockchainFrame(ctk.CTkFrame):
             self.text_box.insert("1.0", str(block) + "\n")
 
         self.text_box.configure(state="disable")
-
         
 
 
 
-class ContactsFrame(ctk.CTkFrame):
+class SettingsFrame(ctk.CTkFrame):
     def __init__(self, parent):
         super().__init__(parent)
-        ctk.CTkLabel(master=self, text="CONTACTS FRAME").pack(fill="both", expand=True)
+
+        # Opciones para el modo y el tema
+        modes = ["dark", "light"]
+        themes = ["blue", "dark-blue", "green"]
+
+        # Combobox para el modo
+        mode_lbl = ctk.CTkLabel(self, text="Appearance Mode:")
+        mode_lbl.pack(padx=10, pady=10)
+        self.mode = ctk.CTkComboBox(self, values=modes)
+        self.mode.pack(padx=10, pady=5)
+
+        # Combobox para el tema
+        theme_lbl = ctk.CTkLabel(self, text="Theme:")
+        theme_lbl.pack(padx=10, pady=10)
+        self.theme = ctk.CTkComboBox(self, values=themes)
+        self.theme.pack(padx=10, pady=5)
+
+        # Botón para aplicar cambios
+        apply_btn = ctk.CTkButton(self, text="Apply", command=self.apply_settings)
+        apply_btn.pack(padx=10, pady=30)
+
+    def apply_settings(self):
+        # Obtener el modo y el tema seleccionados
+        selected_mode = self.mode.get()
+        selected_theme = self.theme.get()
+
+        # Cambiar el modo de la aplicacion
+        if selected_mode == "dark":
+            ctk.set_appearance_mode("dark")
+        elif selected_mode == "light":
+            ctk.set_appearance_mode("light")
+
+        # Cambiar el tema de la aplicación
+        if selected_theme == "blue":
+            ctk.set_default_color_theme("blue")
+        elif selected_theme == "dark-blue":
+            ctk.set_default_color_theme("dark-blue")
+        elif selected_theme == "green":
+            ctk.set_default_color_theme("green")
+
 
 if __name__ == "__main__":
     app = Menu()

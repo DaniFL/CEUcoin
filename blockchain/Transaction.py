@@ -6,12 +6,6 @@ class Transaction:
         self.recipient = recipient
         self.amount = amount
         self.datetime = datetime
-
-    # def __str__(self):
-    #     return (f"\n\tsender= {self.sender}" 
-    #             f"\n\trecipient= {self.recipient}"
-    #             f"\n\tamount= {self.amount}" 
-    #             f"\n\tdatetime= {self.datetime}")
         
     def __str__(self):
         return (f"{self.sender} --> {self.recipient}, amount = {self.amount} CEUs, datetime = {self.datetime}")

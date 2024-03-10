@@ -14,6 +14,10 @@ class Login:
 
         self.root = ctk.CTk()
         self.root.geometry("400x600")
+        self.root.title("CEU Wallet")
+        image = Image.open("images/CEUlogo.png")
+        photo = ImageTk.PhotoImage(image)
+        self.root.iconphoto(True, photo)
 
         self.frame = ctk.CTkFrame(master=self.root)
         self.frame.pack(pady=30, padx=50, fill="both", expand=True)
@@ -52,7 +56,7 @@ class Login:
         print(user)
         if user is not None :
             self.root.destroy()
-            menu = Menu(blockchainmanager)
+            menu = Menu(blockchainmanager, user)
             menu.run()
         else:
             self.info_login.configure(text="Username or password incorrect")

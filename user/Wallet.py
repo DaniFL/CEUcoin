@@ -29,13 +29,6 @@ class Wallet:
         return self.card_id
 
 
-class Transaction:
-    def __init__(self, sender_card_id, recipient_card_id, amount):
-        self.sender_card_id = sender_card_id
-        self.recipient_card_id = recipient_card_id
-        self.amount = amount
-
-
 # El codigo funciona las tarjetas NO
         
 #from smartcard.System import readers

@@ -1,8 +1,10 @@
 import sqlite3
+import hashlib
 from blockchain.Block import *
 from blockchain.Blockchain import *
 from blockchain.Transaction import *
 from user.User import *
+from user.Wallet import *
 from datetime import datetime
 
 class BlockchainManager:
@@ -55,8 +57,21 @@ class BlockchainManager:
             """
             cursor.execute(query)
 
+            query = """
+                CREATE TABLE IF NOT EXISTS Wallet (
+                    card_id INTEGER PRIMARY KEY,
+                    user_id INTEGER REFERENCES Userdata(id),
+                    balance REAL
+                )
+            """
+            cursor.execute(query)
+
             query = "INSERT INTO Userdata (username, password) VALUES (?, ?)"
-            cursor.execute(query, ("user", "user"))
+            password_hash = hashlib.sha256(b"user").hexdigest()
+            cursor.execute(query, ("user", password_hash))
+
+            query = "INSERT INTO Wallet (card_id, user_id, balance) VALUES (?, ?, ?)"
+            cursor.execute(query, (123456789, 1, 50))            
 
             self.connection.commit()
         except sqlite3.Error as e:
@@ -143,31 +158,26 @@ class BlockchainManager:
         
     def check_user(self, username, password):
         try:
+            password_hash = hashlib.sha256(password.encode()).hexdigest()
             cursor = self.connection.cursor()
             query = "SELECT * FROM Userdata WHERE username = ? AND password = ?"
-            cursor.execute(query, (username, password))
+            cursor.execute(query, (username, password_hash))
             userdata = cursor.fetchone()
-            _, username, password = userdata
-            return User(username, password)
+            id, username, password = userdata
+
+            query = "SELECT * FROM Wallet WHERE user_id = ?"
+            cursor.execute(query, (id,))
+            wallet_data = cursor.fetchone()
+            card_id, _, balance = wallet_data
+
+            wallet = Wallet(balance, card_id)
+
+            return User(username, password, wallet)
 
         except sqlite3.Error as e:
             print("Error verifying user:", e)
             return None
         
-    # def check_user(self, username, password):
-    #     try:
-    #         cursor = self.connection.cursor()
-    #         query = "SELECT * FROM Userdata WHERE username = ? AND password = ?"
-    #         cursor.execute(query, (username, password))
-    #         userdata = cursor.fetchone()
-            
-    #         if userdata is not None:
-    #             _, db_username, db_password = userdata
-    #             return User(db_username, db_password)
-    #         else:
-    #             return None
 
-    #     except sqlite3.Error as e:
-    #         print("Error verifying user:", e)
-    #         return None
+        
 
