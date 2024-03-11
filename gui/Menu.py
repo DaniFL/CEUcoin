@@ -221,16 +221,16 @@ class DepositDialog:
 class BlockchainFrame(ctk.CTkFrame):
     def __init__(self, parent, blockchainmanager):
         super().__init__(parent)
-        ctk.CTkLabel(master=self, text="BLOCKCHAIN FRAME").pack(fill="both")
+        ctk.CTkLabel(master=self, text="CEUcoin BLOCKCHAIN").pack(fill="both")
 
-        blockchain = blockchainmanager.get_blockchain()
-        chain = blockchain.get_chain()
+        # blockchain = blockchainmanager.get_blockchain()
+        # chain = blockchain.get_chain()
 
         self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
         self.text_box.pack(fill="both", expand=True)
 
-        for block in chain:
-            self.text_box.insert("1.0", str(block) + "\n")
+        # for block in chain:
+        #     self.text_box.insert("1.0", str(block) + "\n")
 
         self.text_box.configure(state="disable")
         
