@@ -78,9 +78,24 @@ class BalanceFrame(ctk.CTkFrame):
         address_label = ctk.CTkLabel(self, text=f"Card ID: {user.get_wallet().get_card_id()}")
         address_label.pack(pady=10)
 
-        # Crear y mostrar botón para enviar dinero
+        # Crear y mostrar botón para retirar/enviar/ingresar dinero
+        withdraw_button = ctk.CTkButton(self, text="Withdraw", command=self.open_withdraw_dialog)
+        withdraw_button.pack(pady=10, padx=10, side=ctk.LEFT)
+
         send_money_button = ctk.CTkButton(self, text="Send Money", command=self.open_send_money_dialog)
-        send_money_button.pack(pady=10)
+        send_money_button.pack(pady=10, padx=10, side=ctk.LEFT)
+
+        deposit_button = ctk.CTkButton(self, text="Deposit", command=self.open_deposit_dialog)
+        deposit_button.pack(pady=10, padx=10, side=ctk.LEFT)
+
+    def open_withdraw_dialog(self):
+        dialog = WithdrawDialog(self, self.handle_withdraw_money)
+        dialog.show()
+
+    def handle_withdraw_money(self, amount, pin):
+        # Logica de withdraw
+        print("Amount:", amount)
+        print("PIN:", pin)
 
     def open_send_money_dialog(self):
         dialog = SendMoneyDialog(self, self.handle_send_money)
@@ -89,6 +104,15 @@ class BalanceFrame(ctk.CTkFrame):
     def handle_send_money(self, recipient, amount, pin):
         # Aquí debes implementar la lógica para enviar el dinero
         print("Recipient:", recipient)
+        print("Amount:", amount)
+        print("PIN:", pin)
+
+    def open_deposit_dialog(self):
+        dialog = DepositDialog(self, self.handle_deposit_money)
+        dialog.show()
+    
+    def handle_deposit_money(self, amount, pin):
+        # Logica de deposit
         print("Amount:", amount)
         print("PIN:", pin)
 
@@ -127,22 +151,86 @@ class SendMoneyDialog:
 
         # Cerrar el diálogo
         self.dialog.destroy()
+class WithdrawDialog:
+    def __init__(self, parent, callback):
+        self.parent = parent
+        self.callback = callback
 
+        self.dialog = ctk.CTkToplevel(parent)
+        self.dialog.title("Withdraw money")
+        self.dialog.geometry("300x200")
 
+        ctk.CTkLabel(self.dialog, text="Withdraw from this account:").pack(pady=12)
+
+        self.amount_entry = ctk.CTkEntry(self.dialog, placeholder_text="Amount")
+        self.amount_entry.pack(pady=10)
+
+        self.pin_entry = ctk.CTkEntry(self.dialog, placeholder_text="PIN", show="*")
+        self.pin_entry.pack(pady=10)
+
+        withdraw_button = ctk.CTkButton(self.dialog, text="Confirm", command=self.withdraw)
+        withdraw_button.pack(pady=15)
+
+    def show(self):
+        self.dialog.grab_set()
+        self.parent.wait_window(self.dialog)
+
+    def withdraw(self):
+        amount = self.amount_entry.get()
+        pin = self.pin_entry.get()
+
+        # Llamar a la función de devolución de llamada con los datos ingresados
+        self.callback(amount, pin)
+
+        # Cerrar el diálogo
+        self.dialog.destroy()
+class DepositDialog:
+    def __init__(self, parent, callback):
+        self.parent = parent
+        self.callback = callback
+
+        self.dialog = ctk.CTkToplevel(parent)
+        self.dialog.title("Deposit Money")
+        self.dialog.geometry("300x200")
+
+        ctk.CTkLabel(self.dialog, text="Deposit into this account:").pack(pady=12)
+
+        self.amount_entry = ctk.CTkEntry(self.dialog, placeholder_text="Amount")
+        self.amount_entry.pack(pady=10)
+
+        self.pin_entry = ctk.CTkEntry(self.dialog, placeholder_text="PIN", show="*")
+        self.pin_entry.pack(pady=10)
+
+        deposit_button = ctk.CTkButton(self.dialog, text="Confirm", command=self.deposit)
+        deposit_button.pack(pady=15)
+
+    def show(self):
+        self.dialog.grab_set()
+        self.parent.wait_window(self.dialog)
+
+    def deposit(self):
+        amount = self.amount_entry.get()
+        pin = self.pin_entry.get()
+
+        # Llamar a la función de devolución de llamada con los datos ingresados
+        self.callback(amount, pin)
+
+        # Cerrar el diálogo
+        self.dialog.destroy()
 
 class BlockchainFrame(ctk.CTkFrame):
     def __init__(self, parent, blockchainmanager):
         super().__init__(parent)
         ctk.CTkLabel(master=self, text="BLOCKCHAIN FRAME").pack(fill="both")
 
-        # blockchain = blockchainmanager.get_blockchain()
-        # chain = blockchain.get_chain()
+        blockchain = blockchainmanager.get_blockchain()
+        chain = blockchain.get_chain()
 
         self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
         self.text_box.pack(fill="both", expand=True)
 
-        # for block in chain:
-        #     self.text_box.insert("1.0", str(block) + "\n")
+        for block in chain:
+            self.text_box.insert("1.0", str(block) + "\n")
 
         self.text_box.configure(state="disable")
         

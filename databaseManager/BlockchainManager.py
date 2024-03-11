@@ -31,7 +31,8 @@ class BlockchainManager:
                     sender TEXT,
                     recipient TEXT,
                     amount REAL,
-                    datetime TEXT
+                    datetime TEXT,
+                    state TEXT
                 )
             """
             cursor.execute(query)
@@ -85,10 +86,10 @@ class BlockchainManager:
                 cursor.execute(query, (0, "undefined", "genesis hash", datetime.now().isoformat(), 5, 0))
 
                 query = """
-                    INSERT INTO Transactions (block_height, sender, recipient, amount, datetime)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO Transactions (block_height, sender, recipient, amount, datetime, state)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 """
-                cursor.execute(query, (0, "System", "System", 0, datetime.now().isoformat()))
+                cursor.execute(query, (0, "System", "System", 0, datetime.now().isoformat(), "COMPLETED"))
 
                 self.connection.commit()
 
@@ -109,11 +110,11 @@ class BlockchainManager:
             transaction = block.get_transaction()
 
             query = """
-                INSERT INTO Transactions (block_height, sender, recipient, amount, datetime)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO Transactions (block_height, sender, recipient, amount, datetime, state)
+                VALUES (?, ?, ?, ?, ?, ?)
             """
             cursor.execute(query, (block.get_height(), transaction.get_sender(), transaction.get_recipient(),
-                                   transaction.get_amount(), transaction.get_datetime().isoformat()))
+                                   transaction.get_amount(), transaction.get_datetime().isoformat(), transaction.get_state()))
 
             self.connection.commit()
         except sqlite3.Error as e:
@@ -136,8 +137,8 @@ class BlockchainManager:
                 transactions = cursor.fetchall()
 
                 for transaction_data in transactions:
-                    _, _, sender, recipient, amount, transaction_datetime_str = transaction_data
-                    transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'))
+                    _, _, sender, recipient, amount, transaction_datetime_str, state = transaction_data
+                    transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
                     
 
                 block = Block(previous_hash, hash_value, transaction, datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), difficulty, nonce, height)
@@ -191,6 +192,38 @@ class BlockchainManager:
             print("Error adding user:", e)
             return None
         
+    def get_pending_transactions_of_user(self, user):
+        try:
+            cursor = self.connection.cursor()
+
+            query = "SELECT * FROM Transactions WHERE recipient = ? AND state = ?"
+            cursor.execute(query, (user.get_username(), "PENDING"))
+            
+            transactions = cursor.fetchall()
+            pending_transactions = []
+
+            for transaction_data in transactions:
+                _, _, sender, recipient, amount, transaction_datetime_str, state = transaction_data
+                transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
+                pending_transactions.append(transaction)
+                    
+            return pending_transactions
+        except sqlite3.Error as e:
+            print("Error retrieving transactions:", e)
+            return None
+        
+    def update_transactions_of_user(self, user):
+        try:
+            cursor = self.connection.cursor()
+
+            query = "UPDATE Transaction SET state = ? WHERE recipient = ? AND state = ?"
+            cursor.execute(query, ("PENDING", user.get_username(), "PENDING"))
+                    
+        except sqlite3.Error as e:
+            print("Error updating transactions:", e)
+            return None
+
+
 
         
 
