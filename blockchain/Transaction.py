@@ -1,7 +1,7 @@
 from datetime import datetime
 
 class Transaction:
-    def __init__(self, sender, recipient, amount, datetime=datetime.now, state="COMPLETED"):
+    def __init__(self, sender, recipient, amount, datetime=datetime.now(), state="COMPLETED"):
         self.sender = sender
         self.recipient = recipient
         self.amount = amount

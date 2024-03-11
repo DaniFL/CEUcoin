@@ -138,7 +138,7 @@ class BlockchainManager:
 
                 for transaction_data in transactions:
                     _, _, sender, recipient, amount, transaction_datetime_str, state = transaction_data
-                    transaction = Transaction.Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
+                    transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
                     
 
                 block = Block(previous_hash, hash_value, transaction, datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), difficulty, nonce, height)
@@ -208,6 +208,27 @@ class BlockchainManager:
                 pending_transactions.append(transaction)
                     
             return pending_transactions
+        except sqlite3.Error as e:
+            print("Error retrieving transactions:", e)
+            return None
+        
+    def get_transactions_of_user(self, user):
+        try:
+            cursor = self.connection.cursor()
+
+            query = "SELECT * FROM Transactions WHERE sender = ? OR recipient = ?"
+            cursor.execute(query, (user.get_wallet().get_card_id(), user.get_wallet().get_card_id()))
+            print(user.get_wallet().get_card_id())
+            
+            transactions = cursor.fetchall()
+            trans = []
+
+            for transaction_data in transactions:
+                _, _, sender, recipient, amount, transaction_datetime_str, state = transaction_data
+                transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
+                trans.append(transaction)
+                    
+            return trans
         except sqlite3.Error as e:
             print("Error retrieving transactions:", e)
             return None

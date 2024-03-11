@@ -104,7 +104,7 @@ class Signup:
         self.password_entry = ctk.CTkEntry(self.dialog, placeholder_text="password", show="*")
         self.password_entry.pack(pady=10)
 
-        send_button = ctk.CTkButton(self.dialog, text="Send", command=self.register)
+        send_button = ctk.CTkButton(self.dialog, text="Register", command=self.register)
         send_button.pack(pady=15)
 
     def show(self):
@@ -112,14 +112,19 @@ class Signup:
         self.parent.wait_window(self.dialog)
 
     def register(self):
+
         id = self.id_entry.get()
         username = self.username_entry.get()
         password = self.password_entry.get()
+
         # Llamar a la funcion que lee la tarjeta para cojer el serial number y guardarlo en card_id
         connection = self.connect_to_card()
         card_id = self.get_uid(connection)
+
         # Llamar a la función de devolución de llamada con los datos ingresados
         self.callback(id, username, password, card_id)
+
+        self.disconnect_card()
 
         # Cerrar el diálogo
         self.dialog.destroy()
@@ -175,6 +180,9 @@ class Signup:
        else:
            return None
     
+    def disconnect_card(self, connection):
+        connection.disconnect()
+        print("Connection closed")
 
 if __name__ == "__main__":
     app = Login()

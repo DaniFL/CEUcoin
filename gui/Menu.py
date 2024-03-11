@@ -7,6 +7,9 @@ from user.Wallet import *
 class Menu:
     def __init__(self, blockchainmanager, user):
         self.blockchainmanager = blockchainmanager
+
+        self.connection = self.connect_to_card()
+        self.card_id = self.get_uid(self.connection)
         
         self.root = ctk.CTk()
         self.root.geometry("500x550")
@@ -18,7 +21,7 @@ class Menu:
         self.mainframe = ctk.CTkFrame(master=self.root, height=450)
         self.mainframe.grid(row=0, pady=15, padx=10, sticky="nsew")
 
-        self.frameList = [BalanceFrame(self.root, self.blockchainmanager, user), BlockchainFrame(self.root, self.blockchainmanager), SettingsFrame(self.root, user)]
+        self.frameList = [BalanceFrame(self.root, self.blockchainmanager, user), BlockchainFrame(self.root, self.blockchainmanager, user), SettingsFrame(self.root, user)]
         self.frameList[0].grid(row=0, pady=5, padx=10, sticky="nsew")
         self.frameList[1].grid_forget()
         self.frameList[2].grid_forget()
@@ -35,7 +38,56 @@ class Menu:
         contacts_btn = ctk.CTkButton(master=self.buttonframe, text="Settings", command=self.showSettingsFrame)
         contacts_btn.grid(row=0, column=2, padx=10, pady=10)
 
+    def connect_to_card(self):
+        # Buscar lectores disponibles
+        reader_list = readers()
+        
+        if not reader_list:
+            print("No se encontraron lectores de tarjetas inteligentes.")
+            return None
+
+        # Seleccionar el primer lector
+        reader = reader_list[0]
+
+        print("Conectándose al lector:", reader)
+
+        try:
+            # Conectar al lector
+            connection = reader.createConnection()
+            connection.connect(protocol=1)
+
+            print("Conectado a la tarjeta:")
+            print("ATR:", toHexString(connection.getATR()))
+
+
+            return connection
+
+        except Exception as e:
+            print("Error al conectar a la tarjeta:", str(e))
+            return None
+
+    def send_apdu(self, connection, apdu):
+        data, sw1, sw2 = connection.transmit(apdu)
+        response = toHexString(data)
+        return response, sw1, sw2
+        
+    def get_uid(self, connection):
+        # Enviar el primer APDU (select) APDU: 00 A4 04 00 08   data: A0 00 00 00 03 00 00 00
+       apdu1 = [0x00, 0xA4, 0x04, 0x00, 0x08, 0xA0, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00]
+       response, sw1, sw2 = self.send_apdu(connection, apdu1)
     
+       # Enviar el segundo APDU APDU: 80 50 00 00 08   data: 92 F0 7E B4 1B 5B 18 1C 20
+       apdu2 = [0x80, 0x50, 0x00, 0x00, 0x08, 0x92, 0xF0, 0x7E, 0xB4, 0x1B, 0x5B, 0x18, 0x1C, 0x20]
+       response, sw1, sw2 = self.send_apdu(connection, apdu2)
+    
+       if sw1 == 0x61: 
+           # Enviar comando GET RESPONSE
+           apdu_get_response = [0x00, 0xC0, 0x00, 0x00, sw2]
+           response, sw1, sw2 = self.send_apdu(connection, apdu_get_response)
+           # De la respuesta quiero los bytes de 5 a 10
+           return response[11:29]
+       else:
+           return None
 
     def showBalanceFrame(self):
         self.frameList[1].grid_forget()
@@ -57,8 +109,12 @@ class Menu:
 
 
 class BalanceFrame(ctk.CTkFrame):
-    def __init__(self, parent, blockchainmanager, user):
+    def __init__(self, parent, blockchainmanager, user, connection):
         super().__init__(parent)
+        
+        self.blockchainmanager = blockchainmanager
+        self.user = user
+        self.connection = connection
 
         # Cargar y mostrar la imagen de la tarjeta
         image_path = "images/CEUcard.png"
@@ -71,11 +127,11 @@ class BalanceFrame(ctk.CTkFrame):
         image_label.pack(pady=10)
 
         # Crear y mostrar etiqueta con el saldo actual
-        balance_label = ctk.CTkLabel(self, text=f"Current Balance: {user.get_wallet().get_balance()} CEUs", font=("size", 16))
+        balance_label = ctk.CTkLabel(self, text=f"Current Balance: {self.get_card_balance()} CEUs", font=("size", 16))
         balance_label.pack(pady=10)
 
         # Crear y mostrar etiqueta con la dirección de la wallet
-        address_label = ctk.CTkLabel(self, text=f"Card ID: {user.get_wallet().get_card_id()}")
+        address_label = ctk.CTkLabel(self, text=f"Card ID: {self.user.get_wallet().get_card_id()}")
         address_label.pack(pady=10)
 
         # Crear y mostrar botón para retirar/enviar/ingresar dinero
@@ -94,8 +150,22 @@ class BalanceFrame(ctk.CTkFrame):
 
     def handle_withdraw_money(self, amount, pin):
         # Logica de withdraw
-        print("Amount:", amount)
-        print("PIN:", pin)
+        # print("Amount:", amount)
+        # print("PIN:", pin)
+        if self.verify_pin(self.connection, pin):
+            if self.get_card_balance() >= amount:
+                apdu_debit_money = [0x80, 0x40, 0x00, 0x00, 0x01, amount]
+                response, sw1, sw2 = self.send_apdu(self.connection, apdu_debit_money)
+                if sw1 == 0x90 and sw2 == 0x00 :
+                    transaction = Transaction(self.get_wallet().get_card_id(), "System", amount)
+                    blockchain = self.blockchainmanager.get_blockchain()
+                    blockchain.add_block(transaction)
+                    self.blockchainmanager.add_block(blockchain.get_latest_block())
+                    print("Withdraw succesfull.")
+                else:
+                    print("Cannot withdaw money. Call supervisor!")
+            else:
+                print("Not enough money")
 
     def open_send_money_dialog(self):
         dialog = SendMoneyDialog(self, self.handle_send_money)
@@ -103,9 +173,23 @@ class BalanceFrame(ctk.CTkFrame):
 
     def handle_send_money(self, recipient, amount, pin):
         # Aquí debes implementar la lógica para enviar el dinero
-        print("Recipient:", recipient)
-        print("Amount:", amount)
-        print("PIN:", pin)
+        # print("Recipient:", recipient)
+        # print("Amount:", amount)
+        # print("PIN:", pin)
+        if self.verify_pin(self.connection, pin):
+            if self.get_card_balance() >= amount:
+                apdu_debit_money = [0x80, 0x40, 0x00, 0x00, 0x01, amount]
+                response, sw1, sw2 = self.send_apdu(self.connection, apdu_debit_money)
+                if sw1 == 0x90 and sw2 == 0x00 :
+                    transaction = Transaction(self.get_wallet().get_card_id(), recipient, amount, state="PENDING")
+                    blockchain = self.blockchainmanager.get_blockchain()
+                    blockchain.add_block(transaction)
+                    self.blockchainmanager.add_block(blockchain.get_latest_block())
+                    print("Money send.")
+                else:
+                    print("Cannot send money. Call supervisor!")
+            else:
+                print("Not enough money")
 
     def open_deposit_dialog(self):
         dialog = DepositDialog(self, self.handle_deposit_money)
@@ -113,9 +197,45 @@ class BalanceFrame(ctk.CTkFrame):
     
     def handle_deposit_money(self, amount, pin):
         # Logica de deposit
-        print("Amount:", amount)
-        print("PIN:", pin)
+        # print("Amount:", amount)
+        # print("PIN:", pin)
+        if self.verify_pin(self.connection, pin):
+            
+            apdu_credit_money = [0x80, 0x30, 0x00, 0x00, 0x01, amount]
+            response, sw1, sw2 = self.send_apdu(self.connection, apdu_credit_money)
+            if sw1 == 0x90 and sw2 == 0x00 :
+                transaction = Transaction("System", self.get_wallet().get_card_id(), amount)
+                blockchain = self.blockchainmanager.get_blockchain()
+                blockchain.add_block(transaction)
+                self.blockchainmanager.add_block(blockchain.get_latest_block())
+                print("Withdraw succesfull.")
+            else:
+                print("Cannot withdaw money. Call supervisor!")
+            
+    def get_card_balance(self):
+        # Comando APDU para verificar el saldo
+        apdu_check_balance = [0x80, 0x50, 0x00, 0x00, 0x02]
+        response, sw1, sw2 = self.send_apdu(self.connection, apdu_check_balance)
+        if sw1 == 0x90 and sw2 == 0x00:
+            # Decodificar la respuesta para obtener el saldo
+            balance = int(response.replace(" ", ""), 16)
+            return balance
+        else:
+            return None
+       
+    def verify_pin(self, connection, pin):
+        # Comando APDU para verificar el PIN
+        pin_bytes = bytes.fromhex(pin.replace(" ", ""))
+        apdu_verify_pin = [0x80, 0x20, 0x00, 0x05, len(pin_bytes)] + list(pin_bytes)
+        response, sw1, sw2 = self.send_apdu(connection, apdu_verify_pin)
+        if sw1 == 0x90 and sw2 == 0x00:
+            return True
+        else:
+            return sw1, sw2
 
+    def pending_transactions(self):
+        print("hoal")
+        
 class SendMoneyDialog:
     def __init__(self, parent, callback):
         self.parent = parent
@@ -219,35 +339,33 @@ class DepositDialog:
         self.dialog.destroy()
 
 class BlockchainFrame(ctk.CTkFrame):
-    def __init__(self, parent, blockchainmanager):
+    def __init__(self, parent, blockchainmanager, user):
         super().__init__(parent)
         ctk.CTkLabel(master=self, text="CEUcoin BLOCKCHAIN").pack(fill="both")
 
-        # blockchain = blockchainmanager.get_blockchain()
-        # chain = blockchain.get_chain()
+        blockchain = blockchainmanager.get_blockchain()
+        chain = blockchain.get_chain()
 
-        # self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
-        # self.text_box.pack(fill="both", expand=True)
+        self.text_box_b = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
+        self.text_box_b.pack(fill="both", expand=True)
 
-        # for block in chain:
-        #     self.text_box.insert("1.0", str(block) + "\n")
+        for block in chain:
+            self.text_box_b.insert("1.0", str(block) + "\n\n")
 
-        # self.text_box.configure(state="disable")
+        self.text_box_b.configure(state="disable")
 
-        try:
-            blockchain = blockchainmanager.get_blockchain()
-            chain = blockchain.get_chain() if blockchain else []
+        ctk.CTkLabel(master=self, text="My Transactions").pack(fill="both")
 
-            self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
-            self.text_box.pack(fill="both", expand=True)
+        transactions = blockchainmanager.get_transactions_of_user(user)
+        print(transactions)
 
-            for block in chain:
-                self.text_box.insert("1.0", str(block) + "\n")
+        self.text_box_t = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
+        self.text_box_t.pack(fill="both", expand=True)
 
-            self.text_box.configure(state="disabled")
-        except Exception as e:
-            print(f"Error al cargar la cadena de bloques: {e}")
-            # Manejar adecuadamente el error o mostrar un mensaje en la UI
+        for transaction in transactions:
+            self.text_box_t.insert("1.0", str(transaction) + "\n\n")
+
+        self.text_box_t.configure(state="disable")
         
 
 
