@@ -1,12 +1,13 @@
 from PIL import Image, ImageTk
 import customtkinter as ctk
-from databaseManager.BlockchainManager import *
+from databaseManager.BlockchainManager import BlockchainManager
 from user.User import *
 from user.Wallet import *
 
 class Menu:
     def __init__(self, blockchainmanager, user):
         self.blockchainmanager = blockchainmanager
+        
         self.root = ctk.CTk()
         self.root.geometry("500x550")
         self.root.title("CEU Wallet")
@@ -17,7 +18,7 @@ class Menu:
         self.mainframe = ctk.CTkFrame(master=self.root, height=450)
         self.mainframe.grid(row=0, pady=15, padx=10, sticky="nsew")
 
-        self.frameList = [BalanceFrame(self.root, self.blockchainmanager, user), BlockchainFrame(self.root, self.blockchainmanager), SettingsFrame(self.root)]
+        self.frameList = [BalanceFrame(self.root, self.blockchainmanager, user), BlockchainFrame(self.root, self.blockchainmanager), SettingsFrame(self.root, user)]
         self.frameList[0].grid(row=0, pady=5, padx=10, sticky="nsew")
         self.frameList[1].grid_forget()
         self.frameList[2].grid_forget()
@@ -134,39 +135,40 @@ class BlockchainFrame(ctk.CTkFrame):
         super().__init__(parent)
         ctk.CTkLabel(master=self, text="BLOCKCHAIN FRAME").pack(fill="both")
 
-        blockchain = blockchainmanager.get_blockchain()
-        chain = blockchain.get_chain()
+        # blockchain = blockchainmanager.get_blockchain()
+        # chain = blockchain.get_chain()
 
         self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
         self.text_box.pack(fill="both", expand=True)
 
-        for block in chain:
-            self.text_box.insert("1.0", str(block) + "\n")
+        # for block in chain:
+        #     self.text_box.insert("1.0", str(block) + "\n")
 
         self.text_box.configure(state="disable")
         
 
 
-
 class SettingsFrame(ctk.CTkFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, user):
         super().__init__(parent)
 
-        # Opciones para el modo y el tema
+        label_font = ("Helvetica", 15, "bold")
+
+        ctk.CTkLabel(self, text="My account:", font=label_font).pack(pady=10)
+        ctk.CTkLabel(self, text="DNI: " + user.get_id()).pack(pady=5)
+        ctk.CTkLabel(self, text="Username: " + user.get_username()).pack(pady=5)
+
+        # Espacio en la pantalla
+        ctk.CTkLabel(self, text="").pack(pady=20)
+
+        # Opciones para el modo
         modes = ["dark", "light"]
-        themes = ["blue", "dark-blue", "green"]
 
         # Combobox para el modo
-        mode_lbl = ctk.CTkLabel(self, text="Appearance Mode:")
+        mode_lbl = ctk.CTkLabel(self, text="Appearance Mode:", font=label_font)
         mode_lbl.pack(padx=10, pady=10)
         self.mode = ctk.CTkComboBox(self, values=modes)
         self.mode.pack(padx=10, pady=5)
-
-        # Combobox para el tema
-        theme_lbl = ctk.CTkLabel(self, text="Theme:")
-        theme_lbl.pack(padx=10, pady=10)
-        self.theme = ctk.CTkComboBox(self, values=themes)
-        self.theme.pack(padx=10, pady=5)
 
         # Botón para aplicar cambios
         apply_btn = ctk.CTkButton(self, text="Apply", command=self.apply_settings)
@@ -175,21 +177,12 @@ class SettingsFrame(ctk.CTkFrame):
     def apply_settings(self):
         # Obtener el modo y el tema seleccionados
         selected_mode = self.mode.get()
-        selected_theme = self.theme.get()
-
+        
         # Cambiar el modo de la aplicacion
         if selected_mode == "dark":
             ctk.set_appearance_mode("dark")
         elif selected_mode == "light":
             ctk.set_appearance_mode("light")
-
-        # Cambiar el tema de la aplicación
-        if selected_theme == "blue":
-            ctk.set_default_color_theme("blue")
-        elif selected_theme == "dark-blue":
-            ctk.set_default_color_theme("dark-blue")
-        elif selected_theme == "green":
-            ctk.set_default_color_theme("green")
 
 
 if __name__ == "__main__":

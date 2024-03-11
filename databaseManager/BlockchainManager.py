@@ -50,7 +50,7 @@ class BlockchainManager:
 
             query = """
                 CREATE TABLE IF NOT EXISTS Userdata (
-                    id INTEGER PRIMARY KEY,
+                    id TEXT PRIMARY KEY,
                     username VARCHAR(255) NOT NULL,
                     password VARCHAR(255) NOT NULL
                 )
@@ -60,18 +60,11 @@ class BlockchainManager:
             query = """
                 CREATE TABLE IF NOT EXISTS Wallet (
                     card_id INTEGER PRIMARY KEY,
-                    user_id INTEGER REFERENCES Userdata(id),
+                    user_id TEXT REFERENCES Userdata(id),
                     balance REAL
                 )
             """
-            cursor.execute(query)
-
-            query = "INSERT INTO Userdata (username, password) VALUES (?, ?)"
-            password_hash = hashlib.sha256(b"user").hexdigest()
-            cursor.execute(query, ("user", password_hash))
-
-            query = "INSERT INTO Wallet (card_id, user_id, balance) VALUES (?, ?, ?)"
-            cursor.execute(query, (123456789, 1, 50))            
+            cursor.execute(query)           
 
             self.connection.commit()
         except sqlite3.Error as e:
@@ -163,19 +156,39 @@ class BlockchainManager:
             query = "SELECT * FROM Userdata WHERE username = ? AND password = ?"
             cursor.execute(query, (username, password_hash))
             userdata = cursor.fetchone()
-            id, username, password = userdata
+            
+            if userdata is not None:
+                id, username, password = userdata
 
-            query = "SELECT * FROM Wallet WHERE user_id = ?"
-            cursor.execute(query, (id,))
-            wallet_data = cursor.fetchone()
-            card_id, _, balance = wallet_data
+                query = "SELECT * FROM Wallet WHERE user_id = ?"
+                cursor.execute(query, (id,))
+                wallet_data = cursor.fetchone()
+                card_id, _, balance = wallet_data
 
-            wallet = Wallet(balance, card_id)
+                wallet = Wallet(balance, card_id)
 
-            return User(username, password, wallet)
+                return User(id, username, password, wallet)
+            else:
+                return None
 
         except sqlite3.Error as e:
             print("Error verifying user:", e)
+            return None
+        
+    def add_user(self, user):
+        try:
+            cursor = self.connection.cursor()
+
+            query = "INSERT INTO Userdata (id, username, password) VALUES (?, ?, ?)"
+            password_hash = hashlib.sha256(user.get_password().encode()).hexdigest()
+            cursor.execute(query, (user.get_id(), user.get_username(), password_hash))
+
+            query = "INSERT INTO Wallet (card_id, user_id, balance) VALUES (?, ?, ?)"
+            cursor.execute(query, (user.get_wallet().get_card_id(), user.get_id(), user.get_wallet().get_balance())) 
+
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print("Error adding user:", e)
             return None
         
 
