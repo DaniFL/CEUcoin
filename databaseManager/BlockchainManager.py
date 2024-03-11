@@ -60,7 +60,7 @@ class BlockchainManager:
 
             query = """
                 CREATE TABLE IF NOT EXISTS Wallet (
-                    card_id INTEGER PRIMARY KEY,
+                    card_id BLOB PRIMARY KEY,
                     user_id TEXT REFERENCES Userdata(id),
                     balance REAL
                 )
@@ -138,7 +138,7 @@ class BlockchainManager:
 
                 for transaction_data in transactions:
                     _, _, sender, recipient, amount, transaction_datetime_str, state = transaction_data
-                    transaction = Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
+                    transaction = Transaction.Transaction(sender, recipient, amount, datetime.strptime(transaction_datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), state)
                     
 
                 block = Block(previous_hash, hash_value, transaction, datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S.%f'), difficulty, nonce, height)

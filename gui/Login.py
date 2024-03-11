@@ -4,6 +4,9 @@ from PIL import Image, ImageTk
 from databaseManager.BlockchainManager import BlockchainManager
 from user.User import User
 from user.Wallet import Wallet
+from smartcard.System import readers
+from smartcard.util import toHexString
+from smartcard.util import HexListToBinString
 
 
 class Login:
@@ -73,13 +76,15 @@ class Login:
         print("New user:", username)
         print("With password:", password)
         print("Card id:", card_id)
+
         wallet = Wallet(100, card_id)
         user = User(id, username, password, wallet)
+        
         self.blockchainmanager.add_user(user)
 
     def run(self):
         self.root.mainloop()
-        
+            
 
 class Signup:
     def __init__(self, parent, callback):
@@ -111,13 +116,65 @@ class Signup:
         username = self.username_entry.get()
         password = self.password_entry.get()
         # Llamar a la funcion que lee la tarjeta para cojer el serial number y guardarlo en card_id
-        # La tarjeta tiene un pin o hay que configurarlo??
-        card_id = "123456789"
+        connection = self.connect_to_card()
+        card_id = self.get_uid(connection)
         # Llamar a la función de devolución de llamada con los datos ingresados
         self.callback(id, username, password, card_id)
 
         # Cerrar el diálogo
         self.dialog.destroy()
+
+    def connect_to_card(self):
+        # Buscar lectores disponibles
+        reader_list = readers()
+        
+        if not reader_list:
+            print("No se encontraron lectores de tarjetas inteligentes.")
+            return None
+
+        # Seleccionar el primer lector
+        reader = reader_list[0]
+
+        print("Conectándose al lector:", reader)
+
+        try:
+            # Conectar al lector
+            connection = reader.createConnection()
+            connection.connect(protocol=1)
+
+            print("Conectado a la tarjeta:")
+            print("ATR:", toHexString(connection.getATR()))
+
+
+            return connection
+
+        except Exception as e:
+            print("Error al conectar a la tarjeta:", str(e))
+            return None
+        
+    def send_apdu(self, connection, apdu):
+        data, sw1, sw2 = connection.transmit(apdu)
+        response = toHexString(data)
+        return response, sw1, sw2
+        
+    def get_uid(self, connection):
+        # Enviar el primer APDU (select) APDU: 00 A4 04 00 08   data: A0 00 00 00 03 00 00 00
+       apdu1 = [0x00, 0xA4, 0x04, 0x00, 0x08, 0xA0, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00]
+       response, sw1, sw2 = self.send_apdu(connection, apdu1)
+    
+       # Enviar el segundo APDU APDU: 80 50 00 00 08   data: 92 F0 7E B4 1B 5B 18 1C 20
+       apdu2 = [0x80, 0x50, 0x00, 0x00, 0x08, 0x92, 0xF0, 0x7E, 0xB4, 0x1B, 0x5B, 0x18, 0x1C, 0x20]
+       response, sw1, sw2 = self.send_apdu(connection, apdu2)
+    
+       if sw1 == 0x61: 
+           # Enviar comando GET RESPONSE
+           apdu_get_response = [0x00, 0xC0, 0x00, 0x00, sw2]
+           response, sw1, sw2 = self.send_apdu(connection, apdu_get_response)
+           # De la respuesta quiero los bytes de 5 a 10
+           return response[11:29]
+       else:
+           return None
+    
 
 if __name__ == "__main__":
     app = Login()

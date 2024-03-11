@@ -226,13 +226,28 @@ class BlockchainFrame(ctk.CTkFrame):
         # blockchain = blockchainmanager.get_blockchain()
         # chain = blockchain.get_chain()
 
-        self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
-        self.text_box.pack(fill="both", expand=True)
+        # self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
+        # self.text_box.pack(fill="both", expand=True)
 
         # for block in chain:
         #     self.text_box.insert("1.0", str(block) + "\n")
 
-        self.text_box.configure(state="disable")
+        # self.text_box.configure(state="disable")
+
+        try:
+            blockchain = blockchainmanager.get_blockchain()
+            chain = blockchain.get_chain() if blockchain else []
+
+            self.text_box = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
+            self.text_box.pack(fill="both", expand=True)
+
+            for block in chain:
+                self.text_box.insert("1.0", str(block) + "\n")
+
+            self.text_box.configure(state="disabled")
+        except Exception as e:
+            print(f"Error al cargar la cadena de bloques: {e}")
+            # Manejar adecuadamente el error o mostrar un mensaje en la UI
         
 
 
