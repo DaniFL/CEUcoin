@@ -124,7 +124,7 @@ class Signup:
         # Llamar a la función de devolución de llamada con los datos ingresados
         self.callback(id, username, password, card_id)
 
-        self.disconnect_card()
+        self.disconnect_card(connection)
 
         # Cerrar el diálogo
         self.dialog.destroy()
