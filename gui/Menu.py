@@ -95,11 +95,13 @@ class Menu:
         self.frameList[1].grid_forget()
         self.frameList[2].grid_forget()
         self.frameList[0].grid(row=0, pady=5, padx=10, sticky="nsew")
+        self.frameList[0].update_data()
 
     def showBlockchainFrame(self):
         self.frameList[0].grid_forget()
         self.frameList[2].grid_forget()
         self.frameList[1].grid(row=0, pady=5, padx=10, sticky="nsew")
+        self.frameList[1].update_data()
 
     def showSettingsFrame(self):
         self.frameList[0].grid_forget()
@@ -132,8 +134,8 @@ class BalanceFrame(ctk.CTkFrame):
         image_label.pack(pady=10)
 
         # Crear y mostrar etiqueta con el saldo actual
-        balance_label = ctk.CTkLabel(self, text=f"Current Balance: {self.get_card_balance()} CEUs", font=("size", 16))
-        balance_label.pack(pady=10)
+        self.balance_label = ctk.CTkLabel(self, text=f"Current Balance: {self.get_card_balance()} CEUs", font=("size", 16))
+        self.balance_label.pack(pady=10)
 
         # Crear y mostrar etiqueta con la dirección de la wallet
         address_label = ctk.CTkLabel(self, text=f"Card ID: {self.user.get_wallet().get_card_id()}")
@@ -254,6 +256,8 @@ class BalanceFrame(ctk.CTkFrame):
             else:
                 print("Cannot receive transactions. Call supervisor!")
 
+    def update_data(self):
+        self.balance_label.configure(text=f"Current Balance: {self.get_card_balance()} CEUs")
         
 class SendMoneyDialog:
     def __init__(self, parent, callback):
@@ -362,7 +366,10 @@ class BlockchainFrame(ctk.CTkFrame):
         super().__init__(parent)
         ctk.CTkLabel(master=self, text="CEUcoin BLOCKCHAIN").pack(fill="both")
 
-        blockchain = blockchainmanager.get_blockchain()
+        self.blockchainmanager = blockchainmanager
+        self.user = user
+
+        blockchain = self.blockchainmanager.get_blockchain()
         chain = blockchain.get_chain()
 
         self.text_box_b = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
@@ -375,7 +382,7 @@ class BlockchainFrame(ctk.CTkFrame):
 
         ctk.CTkLabel(master=self, text="My Transactions").pack(fill="both")
 
-        transactions = blockchainmanager.get_transactions_of_user(user)
+        transactions = blockchainmanager.get_transactions_of_user(self.user)
         print(transactions)
 
         self.text_box_t = ctk.CTkTextbox(self, font=("Arial", 12), wrap="none")
@@ -386,6 +393,23 @@ class BlockchainFrame(ctk.CTkFrame):
 
         self.text_box_t.configure(state="disable")
         
+    def update_data(self):
+        # Actualizar la blockchain
+        blockchain = self.blockchainmanager.get_blockchain()
+        chain = blockchain.get_chain()
+        self.text_box_b.configure(state="normal")
+        self.text_box_b.delete("1.0", "end")
+        for block in chain:
+            self.text_box_b.insert("1.0", str(block) + "\n\n")
+        self.text_box_b.configure(state="disable")
+
+        # Actualizar las transacciones del usuario
+        transactions = self.blockchainmanager.get_transactions_of_user(self.user)
+        self.text_box_t.configure(state="normal")
+        self.text_box_t.delete("1.0", "end")
+        for transaction in transactions:
+            self.text_box_t.insert("1.0", str(transaction) + "\n\n")
+        self.text_box_t.configure(state="disable")
 
 
 class SettingsFrame(ctk.CTkFrame):
