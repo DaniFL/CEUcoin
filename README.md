@@ -14,7 +14,6 @@ Este proyecto implementa una cadena de bloques en Python para crear y gestionar 
 ## Participantes del Equipo 👩‍💻👨‍💻
 
 - **Daniel Fernández López** [@DaniFL](https://github.com/DaniFL) 🚀 | [LinkedIn](https://www.linkedin.com/in/danielfernandezlopezlink/)
-- **Pablo Baquero Lizana** [@PabloBqL](https://github.com/PabloBqL) 🌟 | [LinkedIn](https://www.linkedin.com/in/pablo-baquero-lizana-881a81298/)
 - **Javier Martínez Cristóbal** [@Jmartinezc-rgb](https://github.com/Jmartinezc-rgb) 🌐 | [LinkedIn](https://www.linkedin.com/in/javier-martinez-cristobal/)
 - **Tomás Álvarez Medina** [@tomasalvarezm](https://github.com/tomasalvarezm) 🔍 | [LinkedIn](https://www.linkedin.com/in/tom%C3%A1salvarezmedina/)
 - **Lucia Marco Garcia-Segond** [@Luciamgs](https://github.com/Luciamgs) 🎨 | [LinkedIn](https://www.linkedin.com/in/luciamarcogs/)
