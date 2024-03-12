@@ -12,7 +12,6 @@ class Menu:
         self.blockchainmanager = blockchainmanager
 
         self.connection = self.connect_to_card()
-        self.card_id = self.get_uid(self.connection)
         
         self.root = ctk.CTk()
         self.root.geometry("500x550")
