@@ -118,6 +118,9 @@ class BalanceFrame(ctk.CTkFrame):
         self.user = user
         self.connection = connection
 
+        # Actualizar saldo
+        self.pending_transactions()
+
         # Cargar y mostrar la imagen de la tarjeta
         image_path = "images/CEUcard.png"
         pil_image = Image.open(image_path)
@@ -145,6 +148,11 @@ class BalanceFrame(ctk.CTkFrame):
 
         deposit_button = ctk.CTkButton(self, text="Deposit", command=self.open_deposit_dialog)
         deposit_button.pack(pady=10, padx=10, side=ctk.LEFT)
+
+    def send_apdu(self, connection, apdu):
+        data, sw1, sw2 = connection.transmit(apdu)
+        response = toHexString(data)
+        return response, sw1, sw2
 
     def open_withdraw_dialog(self):
         dialog = WithdrawDialog(self, self.handle_withdraw_money)
@@ -236,7 +244,16 @@ class BalanceFrame(ctk.CTkFrame):
             return sw1, sw2
 
     def pending_transactions(self):
-        print("hoal")
+        transactions = self.blockchainmanager.get_pending_transactions_of_user(self.user)
+        for transaction in transactions:
+            apdu_credit_money = [0x80, 0x30, 0x00, 0x00, 0x01, transaction.get_amount()]
+            response, sw1, sw2 = self.send_apdu(self.connection, apdu_credit_money)
+            if sw1 == 0x90 and sw2 == 0x00 :
+                self.blockchainmanager.update_transactions_of_user(self.user)
+                print("Pending transactions receive!")
+            else:
+                print("Cannot receive transactions. Call supervisor!")
+
         
 class SendMoneyDialog:
     def __init__(self, parent, callback):
