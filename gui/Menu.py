@@ -3,6 +3,9 @@ import customtkinter as ctk
 from databaseManager.BlockchainManager import BlockchainManager
 from user.User import *
 from user.Wallet import *
+from smartcard.System import readers
+from smartcard.util import toHexString
+from smartcard.util import HexListToBinString
 
 class Menu:
     def __init__(self, blockchainmanager, user):
